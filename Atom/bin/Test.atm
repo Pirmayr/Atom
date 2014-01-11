@@ -1,11 +1,6 @@
-(let unlocalize)(define) let
-((v) let (v) load size listify (n) let ((n) load counter 1 - item (v) load counter 1 - item 1 listify (let) 0 item) (v) load size loop (unlocalize) 0 item (v) load size 3 * 1 + listify)(defhelper) let
-(defhelper go unlocalize)(def) let
 
-' (3 4 5 6 7 8 9 10 11 1009) (prime show) iter '' show-line '
-' (names) load split drop (names) load size csv show '
-' ( 5 9 ) ( fact show-line ) iter '
-' documentation '
+documentation
+
 
 3 1 4 1 (a b c d) def a show
 

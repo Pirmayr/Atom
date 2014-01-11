@@ -167,7 +167,7 @@ namespace Atom
           case "listify":
             this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
             break;
-          case "go":
+          case "eval":
             Utilities.Check(this.Evaluate(this.Values.Pop().SafeList, true));
             break;
           default:

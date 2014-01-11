@@ -3,3 +3,5 @@
 (Modulo call) (mod) let
 (over over mod (1 + smallest-factor) (swap drop) rot if) (smallest-factor) let
 (dup 2 smallest-factor =) (prime 'return 1 if tos is prime, 0 else') let
+(1 -)(dec) let
+(1 +)(inc) let

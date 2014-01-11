@@ -1,8 +1,7 @@
-
 documentation
-
-
-3 1 4 1 (a b c d) def a show
+3 1 4 1 (a b c d) def a show-line
+47 inc show-line
+11 dec show-line
 
 
 

@@ -1,0 +1,2 @@
+( 0 item '-help' glue load show ) ( help ) let    
+((names) load split (names) load size (a) let ((b) let (((b) load show ': ' show (b) load-head show-line)()(b) load-head '' # if)()(b) load-head '(' # if)(a) load loop)(documentation) let

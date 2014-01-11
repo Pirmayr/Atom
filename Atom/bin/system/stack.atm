@@ -1,0 +1,5 @@
+((a) let) (drop 'drop the tos') let
+((a) let (a) load (a) load ) (dup 'duplicate the tos') let
+((a) let (b) let (a) load (b) load) (swap 'swap tos and tos-1') let
+((a) let (b) let (b) load (a) load (b) load) (over) let
+((a) let (b) let (c) let (b) load (a) load (c) load) (rot) let

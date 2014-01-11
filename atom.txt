@@ -1,0 +1,14 @@
+1. split: list -> element-atoms count-atom
+2. join: element-atoms count-atom -> list
+3. count: list -> count-atom
+4. item: list index-atom -> element-atom
+5. save: value name-list -> (nothing)
+6. load: name-list -> value
+7. add, sub, ..., <, >, ...: value1-atom value2-atom operator-atom -> result-atom
+8. name: name-atom -> evaluation-value
+9. if: true-value false-value condition-atom -> (nothing); true false 1 2 < if
+
+Atom = Pref { infix Pref } .
+Pref = [ prefix ] Post .
+Post = Core [ postfix ] .
+Core = "(" Atom ")" | word . 

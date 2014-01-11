@@ -1,0 +1,4 @@
+((eval.n) let eval.n) (eval 'evaluate the tos') let
+((eval.n) let eval.n unlocalize) (globeval 'evaluate the tos and preserve local variables') let
+((fun.list) let '(' (fun.list) load split (fun.list) load size csv ')' glue glue glue call) (fun) let
+((gen.i) let (gen.elem) let ((gen.elem) load) ((gen.elem) load dup gen.i 1 - gen 0 item join) gen.i 1 = if) (gen) let

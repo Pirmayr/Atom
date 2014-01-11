@@ -1,0 +1,3 @@
+((',' swap glue glue) swap 1 - loop) (csv) let
+(Glue call) (glue) let
+(Show call) (show) let

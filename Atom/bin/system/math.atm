@@ -1,0 +1,5 @@
+(dup *) (sqr) let
+((counter) let (1) (counter 1 - fact counter *) counter 1 = if) (fact 'computes factorial recursively') let
+(Modulo call) (mod) let
+(over over mod (1 + smallest-factor) (swap drop) rot if) (smallest-factor) let
+(dup 2 smallest-factor =) (prime 'return 1 if tos is prime, 0 else') let

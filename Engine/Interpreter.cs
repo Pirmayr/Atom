@@ -162,15 +162,28 @@ namespace Engine
     /// </returns>
     public bool Run(string code)
     {
-      Parser atom = new Parser();
-      INodeList tree = atom.Parse(code);
+      Contract.Requires(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
 
-      if (tree == null)
+      try
       {
-        return true;
+        Parser atom = new Parser();
+        INodeList tree = atom.Parse(code);
+
+        if (tree == null)
+        {
+          return true;
+        }
+
+        this.Names.RemoveRange(2, this.Names.Count - 2);
+        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
+        this.Values.Clear();
+        this.Evaluate(tree, true);
+      }
+      catch (Exception e)
+      {
+        Debug.Print(e.Message);
       }
 
-      this.Execute(tree);
       return false;
     }
 
@@ -257,30 +270,6 @@ namespace Engine
       if (!preserveLocalNames)
       {
         this.Names.RemoveRange(oldNamesCount, this.Names.Count - oldNamesCount);
-      }
-    }
-
-    /// <summary>
-    /// Execute the specified parse-tree.
-    /// </summary>
-    /// <param name="tree">
-    /// The parse-tree.
-    /// </param>
-    private void Execute(INodeList tree)
-    {
-      Contract.Requires(tree != null, "Cannot execute null-pointer");
-      Contract.Requires(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
-
-      try
-      {
-        this.Names.RemoveRange(2, this.Names.Count - 2);
-        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
-        this.Values.Clear();
-        this.Evaluate(tree, true);
-      }
-      catch (Exception e)
-      {
-        Debug.Print(e.Message);
       }
     }
   }

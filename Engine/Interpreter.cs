@@ -6,14 +6,29 @@
 //   Interprets the parse-tree of an "atom"-program.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Atom
+namespace Engine
 {
   using System;
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Diagnostics.Contracts;
+
+  using Atom;
+
   using Helpers;
+
   using Nodes;
+
+  /// <summary>
+  /// The invoke host event handler.
+  /// </summary>
+  /// <param name="sender">
+  /// The sender.
+  /// </param>
+  /// <param name="e">
+  /// The e.
+  /// </param>
+  public delegate void InvokeHostEventHandler(object sender, EventArgs e);
 
   /// <summary>
   ///   Interprets the parse-tree of an "atom"-program.
@@ -80,27 +95,24 @@ namespace Atom
     }
 
     /// <summary>
-    /// Execute the specified parse-tree.
+    ///   The run.
     /// </summary>
-    /// <param name="tree">
-    ///   The parse-tree.
-    /// </param>
-    public void Execute(INodeList tree)
+    /// <returns>
+    ///   The <see cref="bool" />.
+    /// </returns>
+    public bool Run()
     {
-      Contract.Requires(tree != null, "Cannot execute null-pointer");
-      Contract.Requires(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
+      Parser atom = new Parser();
+      string code = Utilities.CollectCode();
+      INodeList tree = atom.Parse(code);
 
-      try
+      if (tree == null)
       {
-        this.Names.RemoveRange(2, this.Names.Count - 2);
-        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
-        this.Values.Clear();
-        this.Evaluate(tree, true);
+        return true;
       }
-      catch (Exception e)
-      {
-        Debug.Print(e.Message);
-      }
+
+      this.Execute(tree);
+      return false;
     }
 
     /// <summary>
@@ -110,8 +122,8 @@ namespace Atom
     /// The parse-tree.
     /// </param>
     /// <param name="preserveLocalNames">
-    /// If "true", all locally defined names are preserved after the end of evaluation, if 
-    /// "false" they are deleted.
+    /// If "true", all locally defined names are preserved after the end of evaluation, if
+    ///   "false" they are deleted.
     /// </param>
     /// <returns>
     /// If the evaluation was successful, then "true" is returned, otherwise "false".
@@ -119,7 +131,7 @@ namespace Atom
     private bool Evaluate(IEnumerable<INode> tree, bool preserveLocalNames)
     {
       Contract.Requires(tree != null, "Cannot evaluate null-pointer");
-     
+
       int oldNamesCount = this.Names.Count;
 
       foreach (INode node in tree)
@@ -148,7 +160,7 @@ namespace Atom
             this.Values.PushInt((tos[1].Value != tos[0].Value) ? 1 : 0);
             break;
           case "call":
-            Host.Invoke();
+            this.invokeHost(this, null);
             break;
           case "let":
             tos = this.Values.Pop(2);
@@ -193,5 +205,34 @@ namespace Atom
 
       return true;
     }
+
+    /// <summary>
+    /// Execute the specified parse-tree.
+    /// </summary>
+    /// <param name="tree">
+    /// The parse-tree.
+    /// </param>
+    private void Execute(INodeList tree)
+    {
+      Contract.Requires(tree != null, "Cannot execute null-pointer");
+      Contract.Requires(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
+
+      try
+      {
+        this.Names.RemoveRange(2, this.Names.Count - 2);
+        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
+        this.Values.Clear();
+        this.Evaluate(tree, true);
+      }
+      catch (Exception e)
+      {
+        Debug.Print(e.Message);
+      }
+    }
+
+    /// <summary>
+    /// The "InvokeHost" event.
+    /// </summary>
+    public event InvokeHostEventHandler invokeHost;
   }
 }

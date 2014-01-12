@@ -17,6 +17,8 @@ namespace Atom
 
   using Atom.Properties;
 
+  using Engine;
+
   using Helpers;
 
   using Nodes;
@@ -40,10 +42,11 @@ namespace Atom
       {
         this.InitializeComponent();
         this.UpdateFilesList();
-        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values); 
+        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
         this.ValuesGridView.DataSource = this.ValuesBindingSource;
         this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
         this.NamesGridView.DataSource = this.NamesBindingSource;
+        this.interpreter.invokeHost += this.OnInterpreterInvokehost;
       }
       catch (Exception e)
       {
@@ -57,7 +60,6 @@ namespace Atom
     /// <param name="msg">
     /// The message.
     /// </param>
-    // ReSharper disable once UnusedMember.Global
     public void AddMsg(string msg)
     {
       this.OutputTextBox.Text += msg;
@@ -69,7 +71,6 @@ namespace Atom
     /// <param name="msg">
     /// The message.
     /// </param>
-    // ReSharper disable once UnusedMember.Global
     public void AddMsgLine(string msg)
     {
       this.OutputTextBox.Text += msg + Environment.NewLine;
@@ -92,39 +93,6 @@ namespace Atom
     }
 
     /// <summary>
-    ///   Run current "atom"-code.
-    /// </summary>
-    private void Run()
-    {
-      try
-      {
-        this.UpdateEditCtrl();
-        this.OutputTextBox.Clear();
-
-        Parser atom = new Parser();
-        string code = Utilities.CollectCode();
-        INodeList tree = atom.Parse(code);
-
-        if (tree == null)
-        {
-          return;
-        }
-
-        Host.Run(this, this.interpreter);
-        this.interpreter.Execute(tree);
-
-        this.NamesBindingSource.DataSource = null;
-        this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
-        this.ValuesBindingSource.DataSource = null;
-        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
-      }
-      catch (Exception e)
-      {
-        Console.WriteLine(e);
-      }
-    }
-
-    /// <summary>
     /// The modules list box_ selected value changed.
     /// </summary>
     /// <param name="sender">
@@ -136,6 +104,20 @@ namespace Atom
     private void ModulesListBoxSelectedValueChanged(object sender, EventArgs e)
     {
       this.UpdateEditCtrl();
+    }
+
+    /// <summary>
+    /// Handles the "InvokeHost" event of the interpreter.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The arguments of the event (always null).
+    /// </param>
+    private void OnInterpreterInvokehost(object sender, EventArgs e)
+    {
+      Host.Invoke();
     }
 
     /// <summary>
@@ -165,6 +147,33 @@ namespace Atom
     private void OnRunToolStripMenuItemClick(object sender, EventArgs e)
     {
       this.Run();
+    }
+
+    /// <summary>
+    ///   Run current "atom"-code.
+    /// </summary>
+    private void Run()
+    {
+      try
+      {
+        this.UpdateEditCtrl();
+        this.OutputTextBox.Clear();
+        Host.Run(this, this.interpreter);
+
+        if (this.interpreter.Run())
+        {
+          return;
+        }
+
+        this.NamesBindingSource.DataSource = null;
+        this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
+        this.ValuesBindingSource.DataSource = null;
+        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
+      }
+      catch (Exception e)
+      {
+        Console.WriteLine(e);
+      }
     }
 
     /// <summary>

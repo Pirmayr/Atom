@@ -9,7 +9,11 @@
 namespace Atom
 {
   using System;
+
   using CSScriptLibrary;
+
+  using Engine;
+
   using Helpers;
 
   /// <summary>
@@ -36,7 +40,7 @@ namespace Atom
     /// <param name="interpreter">
     /// The interpreter.
     /// </param>
-    public Host(MainForm form, Interpreter interpreter)
+    private Host(MainForm form, Interpreter interpreter)
     {
       this.TheForm = form;
       this.TheInterpreter = interpreter;
@@ -47,12 +51,15 @@ namespace Atom
     ///   Gets or sets the form.
     /// </summary>
     /// <value>The form.</value>
+    // ReSharper disable once UnusedAutoPropertyAccessor.Global
+    // ReSharper disable once MemberCanBePrivate.Global
     public MainForm TheForm { get; set; }
 
     /// <summary>
     ///   Gets or sets the interpreter.
     /// </summary>
     /// <value>The interpreter.</value>
+    // ReSharper disable once MemberCanBePrivate.Global
     public Interpreter TheInterpreter { get; set; }
 
     /// <summary>

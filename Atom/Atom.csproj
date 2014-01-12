@@ -136,8 +136,6 @@
   <ItemGroup>
     <Compile Include="DisplayNode.cs" />
     <Compile Include="Host.cs" />
-    <Compile Include="Parser.cs" />
-    <Compile Include="Interpreter.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -199,6 +197,10 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Engine\Engine.csproj">
+      <Project>{E333A01E-1674-4865-B674-43CD98FD27C5}</Project>
+      <Name>Engine</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Helpers\Helpers.csproj">
       <Project>{8FE9BE1A-450B-4A8D-960B-4AA5CBAE296E}</Project>
       <Name>Helpers</Name>

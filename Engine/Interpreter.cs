@@ -13,8 +13,6 @@ namespace Engine
   using System.Diagnostics;
   using System.Diagnostics.Contracts;
 
-  using Helpers;
-
   using Nodes;
 
   /// <summary>
@@ -69,11 +67,6 @@ namespace Engine
     }
 
     /// <summary>
-    ///   See interface.
-    /// </summary>
-    public event InvokeHostEventHandler InvokeHost;
-
-    /// <summary>
     ///   Gets value (see interface).
     /// </summary>
     /// <value>The names-stack.</value>
@@ -98,15 +91,78 @@ namespace Engine
     }
 
     /// <summary>
+    /// Performs computation according to the specified operation and parameters.
+    /// </summary>
+    /// <param name="operation">
+    /// The operation.
+    /// </param>
+    /// <param name="opA">
+    /// Operand a.
+    /// </param>
+    /// <param name="opB">
+    /// Operand b.
+    /// </param>
+    /// <returns>
+    /// Result of the computation.
+    /// </returns>
+    private static int Compute(string operation, int opA, int opB)
+    {
+      int result = 0;
+
+      switch (operation)
+      {
+        case "+":
+          result = opA + opB;
+          break;
+        case "-":
+          result = opA - opB;
+          break;
+        case "*":
+          result = opA * opB;
+          break;
+        case "/":
+          result = opA / opB;
+          break;
+        case "=":
+          result = (opA == opB) ? 1 : 0;
+          break;
+        case "#":
+          result = (opA != opB) ? 1 : 0;
+          break;
+        case "<":
+          result = (opA < opB) ? 1 : 0;
+          break;
+        case "<=":
+          result = (opA <= opB) ? 1 : 0;
+          break;
+        case ">":
+          result = (opA > opB) ? 1 : 0;
+          break;
+        case ">=":
+          result = (opA >= opB) ? 1 : 0;
+          break;
+      }
+
+      return result;
+    }
+
+    /// <summary>
     ///   See interface.
     /// </summary>
+    public event InvokeHostEventHandler InvokeHost;
+
+    /// <summary>
+    /// See interface.
+    /// </summary>
+    /// <param name="code">
+    /// See interface for parameter "code".
+    /// </param>
     /// <returns>
-    ///   The <see cref="bool" />.
+    /// The <see cref="bool"/>.
     /// </returns>
-    public bool Run()
+    public bool Run(string code)
     {
       Parser atom = new Parser();
-      string code = Utilities.CollectCode();
       INodeList tree = atom.Parse(code);
 
       if (tree == null)
@@ -128,10 +184,7 @@ namespace Engine
     /// If "true", all locally defined names are preserved after the end of evaluation, if
     ///   "false" they are deleted.
     /// </param>
-    /// <returns>
-    /// If the evaluation was successful, then "true" is returned, otherwise "false".
-    /// </returns>
-    private bool Evaluate(IEnumerable<INode> tree, bool preserveLocalNames)
+    private void Evaluate(IEnumerable<INode> tree, bool preserveLocalNames)
     {
       Contract.Requires(tree != null, "Cannot evaluate null-pointer");
 
@@ -152,7 +205,7 @@ namespace Engine
           case ">":
           case ">=":
             tos = this.Values.Pop(2);
-            this.Values.PushInt(Utilities.Compute(node.Value, tos[1].GetValueInt(), tos[0].GetValueInt()));
+            this.Values.PushInt(Compute(node.Value, tos[1].GetValueInt(), tos[0].GetValueInt()));
             break;
           case "=":
             tos = this.Values.Pop(2);
@@ -183,7 +236,7 @@ namespace Engine
             this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
             break;
           case "eval":
-            Utilities.Check(this.Evaluate(this.Values.Pop().SafeList, true));
+            this.Evaluate(this.Values.Pop().SafeList, true);
             break;
           default:
             INodeList list = this.Names.ListAt(node.Value);
@@ -194,7 +247,7 @@ namespace Engine
             }
             else
             {
-              Utilities.Check(this.Evaluate(list[0].SafeList, false));
+              this.Evaluate(list[0].SafeList, false);
             }
 
             break;
@@ -205,8 +258,6 @@ namespace Engine
       {
         this.Names.RemoveRange(oldNamesCount, this.Names.Count - oldNamesCount);
       }
-
-      return true;
     }
 
     /// <summary>

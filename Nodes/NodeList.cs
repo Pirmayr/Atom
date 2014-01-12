@@ -9,9 +9,8 @@
 namespace Nodes
 {
   using System.Collections.Generic;
+  using System.Diagnostics.Contracts;
   using System.Globalization;
-
-  using Helpers;
 
   /// <summary>
   ///   A list of nodes.
@@ -164,8 +163,8 @@ namespace Nodes
     /// </returns>
     public INodeList Pop(int count, bool reverse = false)
     {
-      Utilities.Check(count <= this.Count);
-
+      Contract.Requires(count <= this.Count);
+      
       NodeList result = new NodeList();
 
       for (int i = 0; i < count; ++i)
@@ -189,10 +188,9 @@ namespace Nodes
     /// </returns>
     public INode Pop()
     {
+      Contract.Requires(0 < this.Count);
+
       int upperBound = this.Count - 1;
-
-      Utilities.Check(0 <= upperBound);
-
       INode result = this[upperBound];
 
       this.RemoveAt(upperBound);

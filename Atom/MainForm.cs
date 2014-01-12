@@ -160,7 +160,7 @@ namespace Atom
         this.OutputTextBox.Clear();
         Host.Run(this, this.interpreter);
 
-        if (this.interpreter.Run())
+        if (this.interpreter.Run(Utilities.CollectCode()))
         {
           return;
         }

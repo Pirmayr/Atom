@@ -34,11 +34,14 @@ namespace Engine
     INodeList Values { get; }
 
     /// <summary>
-    ///   Runs the current "atom"-code.
+    /// Runs the current "atom"-code.
     /// </summary>
+    /// <param name="code">
+    /// The code to be run.
+    /// </param>
     /// <returns>
-    ///   The <see cref="bool" />.
+    /// The <see cref="bool"/>.
     /// </returns>
-    bool Run();
+    bool Run(string code);
   }
 }

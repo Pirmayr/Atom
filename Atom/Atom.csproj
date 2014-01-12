@@ -144,6 +144,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -200,10 +201,6 @@
     <ProjectReference Include="..\Engine\Engine.csproj">
       <Project>{E333A01E-1674-4865-B674-43CD98FD27C5}</Project>
       <Name>Engine</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Helpers\Helpers.csproj">
-      <Project>{8FE9BE1A-450B-4A8D-960B-4AA5CBAE296E}</Project>
-      <Name>Helpers</Name>
     </ProjectReference>
     <ProjectReference Include="..\Nodes\Nodes.csproj">
       <Project>{85826930-C707-418B-BFFE-8B8E16B06B29}</Project>

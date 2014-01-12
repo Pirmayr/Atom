@@ -40,7 +40,7 @@ namespace Atom
     /// <param name="interpreter">
     /// The interpreter.
     /// </param>
-    private Host(MainForm form, Interpreter interpreter)
+    private Host(MainForm form, IInterpreter interpreter)
     {
       this.TheForm = form;
       this.TheInterpreter = interpreter;
@@ -60,7 +60,7 @@ namespace Atom
     /// </summary>
     /// <value>The interpreter.</value>
     // ReSharper disable once MemberCanBePrivate.Global
-    public Interpreter TheInterpreter { get; set; }
+    public IInterpreter TheInterpreter { get; set; }
 
     /// <summary>
     ///   Gets the assembly-helper.
@@ -91,7 +91,7 @@ namespace Atom
     /// <param name="interpreter">
     /// The interpreter.
     /// </param>
-    public static void Run(MainForm form, Interpreter interpreter)
+    public static void Run(MainForm form, IInterpreter interpreter)
     {
       host = new Host(form, interpreter);
     }

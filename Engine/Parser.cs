@@ -6,13 +6,9 @@
 //   Parser for the "atom"-language.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Atom
+namespace Engine
 {
-  #region
-
   using Nodes;
-
-  #endregion
 
   /// <summary>
   ///   Parser for the "atom"-language.

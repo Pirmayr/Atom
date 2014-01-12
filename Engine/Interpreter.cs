@@ -13,27 +13,25 @@ namespace Engine
   using System.Diagnostics;
   using System.Diagnostics.Contracts;
 
-  using Atom;
-
   using Helpers;
 
   using Nodes;
 
   /// <summary>
-  /// The invoke host event handler.
+  ///   The invoke host event handler.
   /// </summary>
   /// <param name="sender">
-  /// The sender.
+  ///   The sender.
   /// </param>
   /// <param name="e">
-  /// The e.
+  ///   The e.
   /// </param>
   public delegate void InvokeHostEventHandler(object sender, EventArgs e);
 
   /// <summary>
   ///   Interprets the parse-tree of an "atom"-program.
   /// </summary>
-  public class Interpreter
+  internal class Interpreter : IInterpreter
   {
     /// <summary>
     ///   The predefined name of names-stack.
@@ -71,7 +69,12 @@ namespace Engine
     }
 
     /// <summary>
-    ///   Gets the names-stack.
+    ///   See interface.
+    /// </summary>
+    public event InvokeHostEventHandler InvokeHost;
+
+    /// <summary>
+    ///   Gets value (see interface).
     /// </summary>
     /// <value>The names-stack.</value>
     public INodeList Names
@@ -83,7 +86,7 @@ namespace Engine
     }
 
     /// <summary>
-    ///   Gets the values-stack.
+    ///   Gets value (see interface).
     /// </summary>
     /// <value>The values-stack.</value>
     public INodeList Values
@@ -95,7 +98,7 @@ namespace Engine
     }
 
     /// <summary>
-    ///   The run.
+    ///   See interface.
     /// </summary>
     /// <returns>
     ///   The <see cref="bool" />.
@@ -160,7 +163,7 @@ namespace Engine
             this.Values.PushInt((tos[1].Value != tos[0].Value) ? 1 : 0);
             break;
           case "call":
-            this.invokeHost(this, null);
+            this.InvokeHost(this, null);
             break;
           case "let":
             tos = this.Values.Pop(2);
@@ -229,10 +232,5 @@ namespace Engine
         Debug.Print(e.Message);
       }
     }
-
-    /// <summary>
-    /// The "InvokeHost" event.
-    /// </summary>
-    public event InvokeHostEventHandler invokeHost;
   }
 }

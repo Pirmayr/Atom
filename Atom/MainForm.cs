@@ -31,7 +31,7 @@ namespace Atom
     /// <summary>
     ///   The interpreter.
     /// </summary>
-    private readonly Interpreter interpreter = new Interpreter();
+    private readonly IInterpreter interpreter = EngineHelpers.NewInterpreter();
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="MainForm" /> class.
@@ -46,7 +46,7 @@ namespace Atom
         this.ValuesGridView.DataSource = this.ValuesBindingSource;
         this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
         this.NamesGridView.DataSource = this.NamesBindingSource;
-        this.interpreter.invokeHost += this.OnInterpreterInvokehost;
+        this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
       }
       catch (Exception e)
       {

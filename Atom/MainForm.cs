@@ -42,11 +42,24 @@ namespace Atom
       {
         this.InitializeComponent();
         this.UpdateFilesList();
-        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
+        
+        if (Utilities.IsUnix())
+        {
+          this.ValuesBindingSource.DataSource = this.interpreter.Values; 
+          this.NamesBindingSource.DataSource = this.interpreter.Names; 
+        }
+        else
+        {
+          this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
+          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);              
+        }
+      
         this.ValuesGridView.DataSource = this.ValuesBindingSource;
-        this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
-        this.NamesGridView.DataSource = this.NamesBindingSource;
+		    this.NamesGridView.DataSource = this.NamesBindingSource;
         this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
+
+		    this.WindowState = FormWindowState.Maximized;
+        this.CenterToParent();
       }
       catch (Exception e)
       {
@@ -166,9 +179,9 @@ namespace Atom
         }
 
         this.NamesBindingSource.DataSource = null;
-        this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
+				this.NamesBindingSource.DataSource = this.interpreter.Names; // GetDisplayList(this.interpreter.Names);
         this.ValuesBindingSource.DataSource = null;
-        this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
+				this.ValuesBindingSource.DataSource = this.interpreter.Values; // GetDisplayList(this.interpreter.Values);
       }
       catch (Exception e)
       {

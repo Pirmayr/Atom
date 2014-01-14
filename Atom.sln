@@ -28,18 +28,38 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{A9930A55-D080-4507-905B-177201BE81BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{A9930A55-D080-4507-905B-177201BE81BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{A9930A55-D080-4507-905B-177201BE81BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{A9930A55-D080-4507-905B-177201BE81BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{85826930-C707-418B-BFFE-8B8E16B06B29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{85826930-C707-418B-BFFE-8B8E16B06B29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85826930-C707-418B-BFFE-8B8E16B06B29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85826930-C707-418B-BFFE-8B8E16B06B29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9930A55-D080-4507-905B-177201BE81BC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9930A55-D080-4507-905B-177201BE81BC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9930A55-D080-4507-905B-177201BE81BC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9930A55-D080-4507-905B-177201BE81BC}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E333A01E-1674-4865-B674-43CD98FD27C5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E333A01E-1674-4865-B674-43CD98FD27C5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E333A01E-1674-4865-B674-43CD98FD27C5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E333A01E-1674-4865-B674-43CD98FD27C5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Atom\Atom.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.FileWidth = 120
+		$1.TabWidth = 2
+		$1.IndentWidth = 2
+		$1.RemoveTrailingWhitespace = False
+		$1.NoTabsAfterNonTabs = True
+		$1.inheritsSet = VisualStudio
+		$1.inheritsScope = text/plain
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.AfterDelegateDeclarationParameterComma = True
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -24,6 +24,11 @@ namespace Helpers
   /// </summary>
   public static class Utilities
   {
+    public static bool IsUnix()
+    {
+      return (Environment.OSVersion.Platform == PlatformID.MacOSX) | (Environment.OSVersion.Platform == PlatformID.Unix);
+    }
+
     /// <summary>
     /// Checks the specified condition.
     /// </summary>
@@ -69,7 +74,7 @@ namespace Helpers
 
       foreach (string curItem in Directory.GetDirectories(directory))
       {
-        result.AddRange(CollectDirectoryItems(curItem + "\\"));
+		result.AddRange(CollectDirectoryItems(curItem + "/"));
       }
 
       result.AddRange(Directory.GetFiles(directory));
@@ -88,9 +93,9 @@ namespace Helpers
     /// </returns>
     public static ICollection<string> CollectFiles(string[] extensions)
     {
-      Contract.Requires(extensions != null);
+			Contract.Requires(extensions != null);
       
-      ICollection<string> items = CollectDirectoryItems(Application.StartupPath + "\\..\\");
+			ICollection<string> items = CollectDirectoryItems(Application.StartupPath + "/../");
       List<string> result = new List<string>();
 
       FilterFilesByExtension(items, extensions, result);
@@ -118,11 +123,11 @@ namespace Helpers
       {
         string fileName = Path.GetFileName(fileSpecification);
 
-        testPath = Application.StartupPath + "\\" + fileName;
+				testPath = Application.StartupPath + "/" + fileName;
 
         if (!File.Exists(testPath))
         {
-          testPath = Application.StartupPath + "\\..\\" + fileName;
+					testPath = Application.StartupPath + "/../" + fileName;
 
           if (!File.Exists(testPath))
           {

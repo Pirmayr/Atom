@@ -9,6 +9,7 @@
 namespace Nodes
 {
   using System.Collections.Generic;
+  using System.Diagnostics.Contracts;
 
   /// <summary>
   ///   A list of nodes.

@@ -14,8 +14,6 @@ namespace Atom
 
   using Engine;
 
-  using Helpers;
-
   /// <summary>
   ///   Host for scripting.
   /// </summary>

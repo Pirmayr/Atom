@@ -15,11 +15,10 @@ namespace Atom
   using System.Linq;
   using System.Windows.Forms;
 
+  using Atom.Annotations;
   using Atom.Properties;
 
   using Engine;
-
-  using Helpers;
 
   using Nodes;
 
@@ -42,24 +41,21 @@ namespace Atom
       {
         this.InitializeComponent();
         this.UpdateFilesList();
-        
+
         if (Utilities.IsUnix())
         {
-          this.ValuesBindingSource.DataSource = this.interpreter.Values; 
-          this.NamesBindingSource.DataSource = this.interpreter.Names; 
+          this.ValuesBindingSource.DataSource = this.interpreter.Values;
+          this.NamesBindingSource.DataSource = this.interpreter.Names;
         }
         else
         {
           this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
-          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);              
+          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
         }
-      
-        this.ValuesGridView.DataSource = this.ValuesBindingSource;
-		    this.NamesGridView.DataSource = this.NamesBindingSource;
-        this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
 
-		    this.WindowState = FormWindowState.Maximized;
-        this.CenterToParent();
+        this.ValuesGridView.DataSource = this.ValuesBindingSource;
+        this.NamesGridView.DataSource = this.NamesBindingSource;
+        this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
       }
       catch (Exception e)
       {
@@ -73,6 +69,7 @@ namespace Atom
     /// <param name="msg">
     /// The message.
     /// </param>
+    [UsedImplicitly]
     public void AddMsg(string msg)
     {
       this.OutputTextBox.Text += msg;
@@ -84,6 +81,7 @@ namespace Atom
     /// <param name="msg">
     /// The message.
     /// </param>
+    [UsedImplicitly]
     public void AddMsgLine(string msg)
     {
       this.OutputTextBox.Text += msg + Environment.NewLine;
@@ -144,12 +142,11 @@ namespace Atom
     /// </param>
     private void OnMainFormFormClosing(object sender, FormClosingEventArgs e)
     {
-      // Utilities.WriteFile(Resources.TestAtm, this.EditCtl.Text);
       this.UpdateEditCtrl();
     }
 
     /// <summary>
-    /// The on run tool strip menu item click.
+    /// The replace button_ click.
     /// </summary>
     /// <param name="sender">
     /// The sender.
@@ -157,9 +154,12 @@ namespace Atom
     /// <param name="e">
     /// The e.
     /// </param>
-    private void OnRunToolStripMenuItemClick(object sender, EventArgs e)
+    private void ReplaceButtonClick(object sender, EventArgs e)
     {
-      this.Run();
+      this.UpdateEditCtrl();
+      this.EditCtl.Tag = null;
+      Utilities.ReplaceInFiles(this.OriginalTextBox.Text, this.ReplacementTextBox.Text);
+      this.UpdateFilesList();
     }
 
     /// <summary>
@@ -179,14 +179,37 @@ namespace Atom
         }
 
         this.NamesBindingSource.DataSource = null;
-				this.NamesBindingSource.DataSource = this.interpreter.Names; // GetDisplayList(this.interpreter.Names);
         this.ValuesBindingSource.DataSource = null;
-				this.ValuesBindingSource.DataSource = this.interpreter.Values; // GetDisplayList(this.interpreter.Values);
+
+        if (Utilities.IsUnix())
+        {
+          this.ValuesBindingSource.DataSource = this.interpreter.Values;
+          this.NamesBindingSource.DataSource = this.interpreter.Names;
+        }
+        else
+        {
+          this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
+          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
+        }
       }
       catch (Exception e)
       {
         Console.WriteLine(e);
       }
+    }
+
+    /// <summary>
+    /// The run button click.
+    /// </summary>
+    /// <param name="sender">
+    /// The sender.
+    /// </param>
+    /// <param name="e">
+    /// The e.
+    /// </param>
+    private void RunButtonClick(object sender, EventArgs e)
+    {
+      this.Run();
     }
 
     /// <summary>
@@ -217,7 +240,7 @@ namespace Atom
     private void UpdateFilesList()
     {
       string[] extensions = { "atm" };
-      ICollection<string> files = Utilities.CollectFiles(extensions);
+      IEnumerable<string> files = Utilities.CollectFiles(extensions);
 
       this.ModulesListBox.Items.Clear();
 

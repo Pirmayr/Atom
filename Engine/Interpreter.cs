@@ -67,6 +67,11 @@ namespace Engine
     }
 
     /// <summary>
+    ///   See interface.
+    /// </summary>
+    public event InvokeHostEventHandler InvokeHost;
+
+    /// <summary>
     ///   Gets value (see interface).
     /// </summary>
     /// <value>The names-stack.</value>
@@ -88,6 +93,42 @@ namespace Engine
       {
         return this.values;
       }
+    }
+
+    /// <summary>
+    /// See interface.
+    /// </summary>
+    /// <param name="code">
+    /// See interface for parameter "code".
+    /// </param>
+    /// <returns>
+    /// The <see cref="bool"/>.
+    /// </returns>
+    public bool Run(string code)
+    {
+      Contract.Assume(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
+
+      try
+      {
+        Parser atom = new Parser();
+        INodeList tree = atom.Parse(code);
+
+        if (tree == null)
+        {
+          return true;
+        }
+
+        this.Names.RemoveRange(2, this.Names.Count - 2);
+        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
+        this.Values.Clear();
+        this.Evaluate(tree, true);
+      }
+      catch (Exception e)
+      {
+        Debug.Print(e.Message);
+      }
+
+      return false;
     }
 
     /// <summary>
@@ -144,47 +185,6 @@ namespace Engine
       }
 
       return result;
-    }
-
-    /// <summary>
-    ///   See interface.
-    /// </summary>
-    public event InvokeHostEventHandler InvokeHost;
-
-    /// <summary>
-    /// See interface.
-    /// </summary>
-    /// <param name="code">
-    /// See interface for parameter "code".
-    /// </param>
-    /// <returns>
-    /// The <see cref="bool"/>.
-    /// </returns>
-    public bool Run(string code)
-    {
-      Contract.Requires(2 <= this.Names.Count, "Upon execution at least 2 elements are expected on the names-stack");
-
-      try
-      {
-        Parser atom = new Parser();
-        INodeList tree = atom.Parse(code);
-
-        if (tree == null)
-        {
-          return true;
-        }
-
-        this.Names.RemoveRange(2, this.Names.Count - 2);
-        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
-        this.Values.Clear();
-        this.Evaluate(tree, true);
-      }
-      catch (Exception e)
-      {
-        Debug.Print(e.Message);
-      }
-
-      return false;
     }
 
     /// <summary>

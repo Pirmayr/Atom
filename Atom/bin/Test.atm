@@ -1,5 +1,6 @@
+(2 3 4 5 6 7 8 9) (isprime showline) map
+(names) load (show) map
 documentation
-14 fact show-line
 
 
 

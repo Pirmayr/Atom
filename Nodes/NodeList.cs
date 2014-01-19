@@ -83,6 +83,17 @@ namespace Nodes
     }
 
     /// <summary>
+    ///   The get enumerator.
+    /// </summary>
+    /// <returns>
+    ///   The enumerator>.
+    /// </returns>
+    public new IEnumerator<INode> GetEnumerator()
+    {
+      return base.GetEnumerator();
+    }
+
+    /// <summary>
     /// Returns the list-item at the specified location.
     /// </summary>
     /// <param name="index">
@@ -163,8 +174,8 @@ namespace Nodes
     /// </returns>
     public INodeList Pop(int count, bool reverse = false)
     {
-      Contract.Requires(count <= this.Count);
-      
+      Contract.Assume(count <= this.Count);
+
       NodeList result = new NodeList();
 
       for (int i = 0; i < count; ++i)
@@ -188,7 +199,7 @@ namespace Nodes
     /// </returns>
     public INode Pop()
     {
-      Contract.Requires(0 < this.Count);
+      Contract.Assume(0 < this.Count);
 
       int upperBound = this.Count - 1;
       INode result = this[upperBound];
@@ -234,17 +245,6 @@ namespace Nodes
     {
       this.Push(new Node(topOfStack[0].GetHead().Value, new NodeList(topOfStack[1])));
       this.Push(new Node(topOfStack[0].GetHead().Value + HelpSuffix, new NodeList(topOfStack[0].SafeList.ItemAt(1))));
-    }
-
-    /// <summary>
-    ///   The get enumerator.
-    /// </summary>
-    /// <returns>
-    ///   The enumerator>.
-    /// </returns>
-    public new IEnumerator<INode> GetEnumerator()
-    {
-      return base.GetEnumerator();
     }
   }
 }

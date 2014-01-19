@@ -1,4 +1,4 @@
 ((v) let (v) load size listify (n) let ((n) load counter 1 - item (v) load counter 1 - item 1 listify (let) 0 item) (v) load size loop (unlocalize) 0 item (v) load size 3 * 1 + listify)(deftransform) let
 (deftransform eval unlocalize)(def) let
 ( 0 item '-help' glue load show ) ( help ) let    
-((names) load split (names) load size (a) let ((b) let (((b) load show ': ' show (b) load-head show-line)()(b) load-head '' # if)()(b) load-head '(' # if)(a) load loop)(documentation) let
+((names) load split (names) load size (a) let ((b) let (((b) load show ': ' show (b) load-head showline)()(b) load-head '' # if)()(b) load-head '(' # if)(a) load loop)(documentation) let

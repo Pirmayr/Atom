@@ -1,2 +1,2 @@
 (Show call) (show 'output the tos') let
-(ShowLine call) (show-line 'output the tos and issue a new-line') let
+(ShowLine call) (showline 'output the tos and issue a new-line') let

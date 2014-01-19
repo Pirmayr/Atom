@@ -6,7 +6,7 @@
 //   Miscellaneous helper-methods.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-namespace Helpers
+namespace Atom
 {
   #region
 
@@ -15,6 +15,7 @@ namespace Helpers
   using System.Diagnostics.Contracts;
   using System.IO;
   using System.Linq;
+  using System.Text.RegularExpressions;
   using System.Windows.Forms;
 
   #endregion
@@ -24,30 +25,6 @@ namespace Helpers
   /// </summary>
   public static class Utilities
   {
-    public static bool IsUnix()
-    {
-      return (Environment.OSVersion.Platform == PlatformID.MacOSX) | (Environment.OSVersion.Platform == PlatformID.Unix);
-    }
-
-    /// <summary>
-    /// Checks the specified condition.
-    /// </summary>
-    /// <param name="condition">
-    /// If set to <c>false</c> an exception is thrown.
-    /// </param>
-    /// <returns>
-    /// The value of the parameter "cond".
-    /// </returns>
-    public static bool Check(bool condition)
-    {
-      if (!condition)
-      {
-        throw new ArgumentException("Assertion failed");
-      }
-
-      return true;
-    }
-
     /// <summary>
     ///   Returns the concatenated code of all "atom"-files delivered by "CollectFiles".
     /// </summary>
@@ -60,29 +37,6 @@ namespace Helpers
     }
 
     /// <summary>
-    /// The collect directory items.
-    /// </summary>
-    /// <param name="directory">
-    /// The directory.
-    /// </param>
-    /// <returns>
-    /// The directory items.
-    /// </returns>
-    public static ICollection<string> CollectDirectoryItems(string directory)
-    {
-      List<string> result = new List<string>();
-
-      foreach (string curItem in Directory.GetDirectories(directory))
-      {
-		result.AddRange(CollectDirectoryItems(curItem + "/"));
-      }
-
-      result.AddRange(Directory.GetFiles(directory));
-
-      return result;
-    }
-
-    /// <summary>
     /// Collect filenames with given extensions in certain standard directories.
     /// </summary>
     /// <param name="extensions">
@@ -91,11 +45,11 @@ namespace Helpers
     /// <returns>
     /// The filenames found.
     /// </returns>
-    public static ICollection<string> CollectFiles(string[] extensions)
+    public static IEnumerable<string> CollectFiles(IEnumerable<string> extensions)
     {
-			Contract.Requires(extensions != null);
-      
-			ICollection<string> items = CollectDirectoryItems(Application.StartupPath + "/../");
+      Contract.Requires(extensions != null);
+
+      IEnumerable<string> items = CollectDirectoryItems(Application.StartupPath + "/../");
       List<string> result = new List<string>();
 
       FilterFilesByExtension(items, extensions, result);
@@ -123,11 +77,11 @@ namespace Helpers
       {
         string fileName = Path.GetFileName(fileSpecification);
 
-				testPath = Application.StartupPath + "/" + fileName;
+        testPath = Application.StartupPath + "/" + fileName;
 
         if (!File.Exists(testPath))
         {
-					testPath = Application.StartupPath + "/../" + fileName;
+          testPath = Application.StartupPath + "/../" + fileName;
 
           if (!File.Exists(testPath))
           {
@@ -137,6 +91,15 @@ namespace Helpers
       }
 
       return testPath;
+    }
+
+    /// <summary>
+    ///   Checks, if the programs runs on a Unix system.
+    /// </summary>
+    /// <returns>If the program runs on a Unix system, the return value is "true", otherwise it is "false".</returns>
+    public static bool IsUnix()
+    {
+      return (Environment.OSVersion.Platform == PlatformID.MacOSX) | (Environment.OSVersion.Platform == PlatformID.Unix);
     }
 
     /// <summary>
@@ -154,6 +117,31 @@ namespace Helpers
     }
 
     /// <summary>
+    /// The replace in files.
+    /// </summary>
+    /// <param name="original">
+    /// The original.
+    /// </param>
+    /// <param name="replacement">
+    /// The replacement.
+    /// </param>
+    public static void ReplaceInFiles(string original, string replacement)
+    {
+      Regex regex = new Regex(string.Format(@"\b{0}\b", original));
+      
+      if (!string.IsNullOrEmpty(original))
+      {
+        foreach (string curFile in CollectFiles(new[] { "atm" }))
+        {
+          string curContent = File.ReadAllText(curFile);
+
+          curContent = regex.Replace(curContent, replacement);
+          File.WriteAllText(curFile, curContent);
+        }
+      }
+    }
+
+    /// <summary>
     /// Writes text to file
     /// </summary>
     /// <param name="filePath">
@@ -165,6 +153,29 @@ namespace Helpers
     public static void WriteFile(string filePath, string txt)
     {
       File.WriteAllText(FilePath(filePath, filePath), txt);
+    }
+
+    /// <summary>
+    /// The collect directory items.
+    /// </summary>
+    /// <param name="directory">
+    /// The directory.
+    /// </param>
+    /// <returns>
+    /// The directory items.
+    /// </returns>
+    private static IEnumerable<string> CollectDirectoryItems(string directory)
+    {
+      List<string> result = new List<string>();
+
+      foreach (string curItem in Directory.GetDirectories(directory))
+      {
+        result.AddRange(CollectDirectoryItems(curItem + "/"));
+      }
+
+      result.AddRange(Directory.GetFiles(directory));
+
+      return result;
     }
 
     /// <summary>
@@ -183,7 +194,7 @@ namespace Helpers
     {
       Contract.Requires(files != null);
       Contract.Requires(extensions != null);
-      
+
       foreach (string curFile in files)
       {
         foreach (string curExtension in extensions)

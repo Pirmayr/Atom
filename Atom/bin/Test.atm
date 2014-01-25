@@ -1,8 +1,10 @@
-(2 3 4 5 6 7 8 9) (isprime showline) map
-(names) load (show) map
-documentation
+' csv-example '
+' glue-example '
+' documentation '
+' (loop) help '
+
+(names) load clone (1 listify help) map
 
 
 
- 
 

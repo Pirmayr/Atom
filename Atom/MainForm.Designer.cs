@@ -52,9 +52,9 @@ namespace Atom
       this.NamesBindingSource = new System.Windows.Forms.BindingSource(this.components);
       this.MainToolStrip = new System.Windows.Forms.ToolStrip();
       this.RunButton = new System.Windows.Forms.ToolStripButton();
-      this.OriginalTextBox = new System.Windows.Forms.ToolStripTextBox();
-      this.ReplacementTextBox = new System.Windows.Forms.ToolStripTextBox();
       this.ReplaceButton = new System.Windows.Forms.ToolStripButton();
+      this.ReplacementTextBox = new System.Windows.Forms.ToolStripTextBox();
+      this.OriginalTextBox = new System.Windows.Forms.ToolStripTextBox();
       this.MainPanel.SuspendLayout();
       this.EditPanel.SuspendLayout();
       this.EditHelperPanel.SuspendLayout();
@@ -83,7 +83,7 @@ namespace Atom
       this.OutputTextBox.Name = "OutputTextBox";
       this.OutputTextBox.ReadOnly = true;
       this.OutputTextBox.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.OutputTextBox.Size = new System.Drawing.Size(395, 245);
+      this.OutputTextBox.Size = new System.Drawing.Size(392, 279);
       this.OutputTextBox.TabIndex = 2;
       this.OutputTextBox.WordWrap = false;
       // 
@@ -94,12 +94,12 @@ namespace Atom
       this.ModulesListBox.Dock = System.Windows.Forms.DockStyle.Fill;
       this.ModulesListBox.FormattingEnabled = true;
       this.ModulesListBox.IntegralHeight = false;
-      this.ModulesListBox.ItemHeight = 16;
+      this.ModulesListBox.ItemHeight = 18;
       this.ModulesListBox.Location = new System.Drawing.Point(0, 0);
       this.ModulesListBox.Margin = new System.Windows.Forms.Padding(0);
       this.ModulesListBox.Name = "ModulesListBox";
       this.ModulesListBox.ScrollAlwaysVisible = true;
-      this.ModulesListBox.Size = new System.Drawing.Size(441, 221);
+      this.ModulesListBox.Size = new System.Drawing.Size(444, 247);
       this.ModulesListBox.TabIndex = 4;
       this.ModulesListBox.SelectedValueChanged += new System.EventHandler(this.ModulesListBoxSelectedValueChanged);
       // 
@@ -108,11 +108,11 @@ namespace Atom
       this.MainPanel.Controls.Add(this.EditPanel);
       this.MainPanel.Controls.Add(this.OutputPanel);
       this.MainPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.MainPanel.Location = new System.Drawing.Point(443, 27);
+      this.MainPanel.Location = new System.Drawing.Point(446, 42);
       this.MainPanel.Margin = new System.Windows.Forms.Padding(0);
       this.MainPanel.Name = "MainPanel";
       this.MainPanel.Padding = new System.Windows.Forms.Padding(2, 0, 0, 0);
-      this.MainPanel.Size = new System.Drawing.Size(397, 396);
+      this.MainPanel.Size = new System.Drawing.Size(394, 433);
       this.MainPanel.TabIndex = 5;
       // 
       // EditPanel
@@ -123,7 +123,7 @@ namespace Atom
       this.EditPanel.Location = new System.Drawing.Point(2, 0);
       this.EditPanel.Margin = new System.Windows.Forms.Padding(0);
       this.EditPanel.Name = "EditPanel";
-      this.EditPanel.Size = new System.Drawing.Size(395, 149);
+      this.EditPanel.Size = new System.Drawing.Size(392, 152);
       this.EditPanel.TabIndex = 7;
       // 
       // EditHelperPanel
@@ -134,7 +134,7 @@ namespace Atom
       this.EditHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.EditHelperPanel.Name = "EditHelperPanel";
       this.EditHelperPanel.Padding = new System.Windows.Forms.Padding(0, 0, 0, 2);
-      this.EditHelperPanel.Size = new System.Drawing.Size(395, 149);
+      this.EditHelperPanel.Size = new System.Drawing.Size(392, 152);
       this.EditHelperPanel.TabIndex = 7;
       // 
       // EditCtl
@@ -142,11 +142,11 @@ namespace Atom
       this.EditCtl.BorderStyle = System.Windows.Forms.BorderStyle.None;
       this.EditCtl.Dock = System.Windows.Forms.DockStyle.Fill;
       this.EditCtl.Location = new System.Drawing.Point(0, 0);
-      this.EditCtl.Margin = new System.Windows.Forms.Padding(4);
+      this.EditCtl.Margin = new System.Windows.Forms.Padding(2, 5, 2, 5);
       this.EditCtl.Multiline = true;
       this.EditCtl.Name = "EditCtl";
       this.EditCtl.ScrollBars = System.Windows.Forms.ScrollBars.Both;
-      this.EditCtl.Size = new System.Drawing.Size(395, 147);
+      this.EditCtl.Size = new System.Drawing.Size(392, 150);
       this.EditCtl.TabIndex = 0;
       // 
       // OutputPanel
@@ -154,10 +154,10 @@ namespace Atom
       this.OutputPanel.BackColor = System.Drawing.SystemColors.Control;
       this.OutputPanel.Controls.Add(this.OutputHelperPanel);
       this.OutputPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.OutputPanel.Location = new System.Drawing.Point(2, 149);
+      this.OutputPanel.Location = new System.Drawing.Point(2, 152);
       this.OutputPanel.Margin = new System.Windows.Forms.Padding(0);
       this.OutputPanel.Name = "OutputPanel";
-      this.OutputPanel.Size = new System.Drawing.Size(395, 247);
+      this.OutputPanel.Size = new System.Drawing.Size(392, 281);
       this.OutputPanel.TabIndex = 7;
       // 
       // OutputHelperPanel
@@ -168,18 +168,18 @@ namespace Atom
       this.OutputHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.OutputHelperPanel.Name = "OutputHelperPanel";
       this.OutputHelperPanel.Padding = new System.Windows.Forms.Padding(0, 2, 0, 0);
-      this.OutputHelperPanel.Size = new System.Drawing.Size(395, 247);
+      this.OutputHelperPanel.Size = new System.Drawing.Size(392, 281);
       this.OutputHelperPanel.TabIndex = 8;
       // 
       // ModulesPanel
       // 
       this.ModulesPanel.Controls.Add(this.ModulesHelperPanel);
       this.ModulesPanel.Dock = System.Windows.Forms.DockStyle.Left;
-      this.ModulesPanel.Location = new System.Drawing.Point(0, 27);
+      this.ModulesPanel.Location = new System.Drawing.Point(0, 42);
       this.ModulesPanel.Margin = new System.Windows.Forms.Padding(0);
       this.ModulesPanel.Name = "ModulesPanel";
       this.ModulesPanel.Padding = new System.Windows.Forms.Padding(0, 0, 2, 0);
-      this.ModulesPanel.Size = new System.Drawing.Size(443, 396);
+      this.ModulesPanel.Size = new System.Drawing.Size(446, 433);
       this.ModulesPanel.TabIndex = 6;
       // 
       // ModulesHelperPanel
@@ -191,17 +191,17 @@ namespace Atom
       this.ModulesHelperPanel.Location = new System.Drawing.Point(0, 0);
       this.ModulesHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.ModulesHelperPanel.Name = "ModulesHelperPanel";
-      this.ModulesHelperPanel.Size = new System.Drawing.Size(441, 396);
+      this.ModulesHelperPanel.Size = new System.Drawing.Size(444, 433);
       this.ModulesHelperPanel.TabIndex = 9;
       // 
       // NamesHelperPanel
       // 
       this.NamesHelperPanel.Controls.Add(this.NamesGridView);
       this.NamesHelperPanel.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.NamesHelperPanel.Location = new System.Drawing.Point(0, 221);
+      this.NamesHelperPanel.Location = new System.Drawing.Point(0, 247);
       this.NamesHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.NamesHelperPanel.Name = "NamesHelperPanel";
-      this.NamesHelperPanel.Size = new System.Drawing.Size(441, 9);
+      this.NamesHelperPanel.Size = new System.Drawing.Size(444, 0);
       this.NamesHelperPanel.TabIndex = 9;
       // 
       // NamesGridView
@@ -221,7 +221,7 @@ namespace Atom
       this.NamesGridView.Name = "NamesGridView";
       this.NamesGridView.RowHeadersVisible = false;
       this.NamesGridView.RowTemplate.Height = 24;
-      this.NamesGridView.Size = new System.Drawing.Size(441, 9);
+      this.NamesGridView.Size = new System.Drawing.Size(444, 0);
       this.NamesGridView.TabIndex = 8;
       // 
       // ModuleHelperPanel
@@ -231,17 +231,17 @@ namespace Atom
       this.ModuleHelperPanel.Location = new System.Drawing.Point(0, 0);
       this.ModuleHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.ModuleHelperPanel.Name = "ModuleHelperPanel";
-      this.ModuleHelperPanel.Size = new System.Drawing.Size(441, 221);
+      this.ModuleHelperPanel.Size = new System.Drawing.Size(444, 247);
       this.ModuleHelperPanel.TabIndex = 10;
       // 
       // StackHelperPanel
       // 
       this.StackHelperPanel.Controls.Add(this.ValuesGridView);
       this.StackHelperPanel.Dock = System.Windows.Forms.DockStyle.Bottom;
-      this.StackHelperPanel.Location = new System.Drawing.Point(0, 230);
+      this.StackHelperPanel.Location = new System.Drawing.Point(0, 246);
       this.StackHelperPanel.Margin = new System.Windows.Forms.Padding(0);
       this.StackHelperPanel.Name = "StackHelperPanel";
-      this.StackHelperPanel.Size = new System.Drawing.Size(441, 166);
+      this.StackHelperPanel.Size = new System.Drawing.Size(444, 187);
       this.StackHelperPanel.TabIndex = 11;
       // 
       // ValuesGridView
@@ -261,19 +261,22 @@ namespace Atom
       this.ValuesGridView.Name = "ValuesGridView";
       this.ValuesGridView.RowHeadersVisible = false;
       this.ValuesGridView.RowTemplate.Height = 24;
-      this.ValuesGridView.Size = new System.Drawing.Size(441, 166);
+      this.ValuesGridView.Size = new System.Drawing.Size(444, 187);
       this.ValuesGridView.TabIndex = 7;
       // 
       // MainToolStrip
       // 
+      this.MainToolStrip.GripMargin = new System.Windows.Forms.Padding(0);
+      this.MainToolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
       this.MainToolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.RunButton,
-            this.OriginalTextBox,
+            this.ReplaceButton,
             this.ReplacementTextBox,
-            this.ReplaceButton});
+            this.OriginalTextBox});
       this.MainToolStrip.Location = new System.Drawing.Point(0, 0);
       this.MainToolStrip.Name = "MainToolStrip";
-      this.MainToolStrip.Size = new System.Drawing.Size(840, 27);
+      this.MainToolStrip.Padding = new System.Windows.Forms.Padding(2, 7, 2, 5);
+      this.MainToolStrip.Size = new System.Drawing.Size(840, 42);
       this.MainToolStrip.TabIndex = 10;
       this.MainToolStrip.Text = "toolStrip1";
       // 
@@ -283,39 +286,47 @@ namespace Atom
       this.RunButton.Image = ((System.Drawing.Image)(resources.GetObject("RunButton.Image")));
       this.RunButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.RunButton.Name = "RunButton";
-      this.RunButton.Size = new System.Drawing.Size(38, 24);
+      this.RunButton.Size = new System.Drawing.Size(37, 27);
       this.RunButton.Text = "Run";
       this.RunButton.Click += new System.EventHandler(this.RunButtonClick);
       // 
-      // OriginalTextBox
-      // 
-      this.OriginalTextBox.Name = "OriginalTextBox";
-      this.OriginalTextBox.Size = new System.Drawing.Size(100, 27);
-      // 
-      // ReplacementTextBox
-      // 
-      this.ReplacementTextBox.Name = "ReplacementTextBox";
-      this.ReplacementTextBox.Size = new System.Drawing.Size(100, 27);
-      // 
       // ReplaceButton
       // 
+      this.ReplaceButton.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
       this.ReplaceButton.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
       this.ReplaceButton.Image = ((System.Drawing.Image)(resources.GetObject("ReplaceButton.Image")));
       this.ReplaceButton.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.ReplaceButton.Name = "ReplaceButton";
-      this.ReplaceButton.Size = new System.Drawing.Size(66, 24);
+      this.ReplaceButton.Size = new System.Drawing.Size(62, 27);
       this.ReplaceButton.Text = "Replace";
       this.ReplaceButton.Click += new System.EventHandler(this.ReplaceButtonClick);
       // 
+      // ReplacementTextBox
+      // 
+      this.ReplacementTextBox.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+      this.ReplacementTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.ReplacementTextBox.Margin = new System.Windows.Forms.Padding(3);
+      this.ReplacementTextBox.Name = "ReplacementTextBox";
+      this.ReplacementTextBox.Size = new System.Drawing.Size(137, 24);
+      // 
+      // OriginalTextBox
+      // 
+      this.OriginalTextBox.Alignment = System.Windows.Forms.ToolStripItemAlignment.Right;
+      this.OriginalTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+      this.OriginalTextBox.Margin = new System.Windows.Forms.Padding(3);
+      this.OriginalTextBox.Name = "OriginalTextBox";
+      this.OriginalTextBox.Size = new System.Drawing.Size(137, 24);
+      // 
       // MainForm
       // 
-      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+      this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(840, 423);
+      this.ClientSize = new System.Drawing.Size(840, 475);
       this.Controls.Add(this.MainPanel);
       this.Controls.Add(this.ModulesPanel);
       this.Controls.Add(this.MainToolStrip);
-      this.Margin = new System.Windows.Forms.Padding(4);
+      this.Font = new System.Drawing.Font("Calibri", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+      this.Margin = new System.Windows.Forms.Padding(2, 5, 2, 5);
       this.Name = "MainForm";
       this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
       this.Text = "Atom";

@@ -246,5 +246,10 @@ namespace Nodes
       this.Push(new Node(topOfStack[0].GetHead().Value, new NodeList(topOfStack[1])));
       this.Push(new Node(topOfStack[0].GetHead().Value + HelpSuffix, new NodeList(topOfStack[0].SafeList.ItemAt(1))));
     }
+
+    public INodeList Clone()
+    {
+      return this.MemberwiseClone() as INodeList;
+    }
   }
 }

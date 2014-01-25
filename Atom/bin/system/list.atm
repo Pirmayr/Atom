@@ -1,5 +1,11 @@
 (Size call) (size) let
 (Item call) (item) let
 (Join call) (join) let
-((split.list) let (split.list) load size (split.size) let ((split.list) load split.size counter - item) split.size loop drop drop) (split) let
-(load 0 item)(load-head 'load head of the list associated with the tos') let
+
+((split.list 'hugo') let (split.list) load size (split.size) let ((split.list) load split.size counter - item) split.size loop) (split) let
+
+(load 0 item)(head 'load head of the list associated with the tos') let
+
+((c) let (b) let (a) let (a) load (b) load (c) load (a) load islist if) (iflist) let
+
+((c) let (b) let (a) let (a) load (b) load (c) load (a) load '(' = if) (iflparen) let

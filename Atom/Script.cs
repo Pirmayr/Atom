@@ -22,7 +22,7 @@ public class Script
       int result = int.Parse(tos1) % int.Parse(tos0);    
       host.TheInterpreter.Values.Push(NodesHelpers.NewNode(result.ToString()));
     }
-   
+
     public static void Glue(Host host)
     {
       string tos0 = host.TheInterpreter.Values.Pop().Value;
@@ -30,7 +30,16 @@ public class Script
       string result = tos1 + tos0;
       host.TheInterpreter.Values.Push(NodesHelpers.NewNode(result));
     }
-   
+
+    public static void Trim(Host host)
+    {
+      string tos = host.TheInterpreter.Values.Pop().Value;
+      tos = tos.Trim();
+      tos = tos.Replace("  ", " ");
+      string result = tos;
+      host.TheInterpreter.Values.Push(NodesHelpers.NewNode(result));
+    }
+
     public static void Size(Host host)
     {
       INodeList tos = host.TheInterpreter.Values.Pop(1);

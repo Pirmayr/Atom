@@ -9,6 +9,7 @@
 namespace Atom
 {
   using System;
+  using System.Reflection;
 
   using CSScriptLibrary;
 
@@ -42,7 +43,8 @@ namespace Atom
     {
       this.TheForm = form;
       this.TheInterpreter = interpreter;
-      this.assemblyHelper = new AsmHelper(CSScript.Load(Utilities.FilePath("Script.cs", string.Empty), null, true));
+      // this.assemblyHelper = new AsmHelper(CSScript.Load(Utilities.FilePath("Script.cs", string.Empty), null, true));
+      this.assemblyHelper = new AsmHelper(Assembly.GetExecutingAssembly());
     }
 
     /// <summary>

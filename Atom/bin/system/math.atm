@@ -1,7 +1,7 @@
-(dup *) (square 'square the tos') let
+(copy *) (square 'square the tos') let
 ((counter) let (1) (counter 1 - factorial counter *) counter 1 = if) (factorial 'compute factorial recursively') let
 (Modulo call) (mod) let
-(over over mod (1 + smallestfactor) (swap drop) rot if) (smallestfactor) let
-(dup 2 smallestfactor =) (isprime 'return 1 if tos is isprime, 0 else') let
+(over over mod (1 + smallestfactor) (swap drop) rotate if) (smallestfactor) let
+(copy 2 smallestfactor =) (isprime 'return 1 if tos is isprime, 0 else') let
 (1 -)(dec) let
 (1 +)(inc) let

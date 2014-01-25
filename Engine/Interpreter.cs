@@ -236,7 +236,17 @@ namespace Engine
             this.Names.PushName(tos);
             break;
           case "load":
-            this.Values.Push(this.Names.ListAt(this.Values.Pop().GetHead().Value)[0]);
+            INodeList loadedList = this.Names.ListAt(this.Values.Pop().GetHead().Value);
+
+            if ((loadedList != null) && (0 < loadedList.Count))
+            {
+              this.Values.Push(loadedList[0]);
+            }
+            else
+            {
+              this.Values.Push(NodesHelpers.NewNode(""));
+            }
+            
             break;
           case "if":
             tos = this.Values.Pop(3);
@@ -248,8 +258,14 @@ namespace Engine
           case "listify":
             this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
             break;
-          case "eval":
+          case "evaluate":
             this.Evaluate(this.Values.Pop().SafeList, true);
+            break;
+          case "islist":
+            this.Values.PushInt((this.Values.Pop().List == null) ? 0 : 1);
+            break;
+          case "clone":
+            this.Values.Push(NodesHelpers.NewNode(this.Values.Pop().SafeList.Clone()));
             break;
           default:
             INodeList list = this.Names.ListAt(node.Value);

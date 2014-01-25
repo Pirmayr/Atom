@@ -153,5 +153,7 @@ namespace Nodes
     /// The count.
     /// </param>
     void RemoveRange(int start, int count);
+
+    INodeList Clone();
   }
 }

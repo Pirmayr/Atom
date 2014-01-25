@@ -1,2 +1,2 @@
 ((counter) let (code) let (code (code) load counter 1 - loop) () counter if) (loop 'evaluate tos-1 tos times') let
-((function) let (list) let ((list) load counter 1 - item function) (list) load size loop) (map 'apply tos on each element of tos-1') let
+((function) let (list) let ((list) load (list) load size counter - item function) (list) load size loop) (map 'apply tos on each element of tos-1') let

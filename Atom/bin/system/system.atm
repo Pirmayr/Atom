@@ -1,5 +1,6 @@
 ((v) let (v) load size listify (n) let ((n) load counter 1 - item (v) load counter 1 - item 1 listify (let) 0 item) (v) load size loop (unlocalize) 0 item (v) load size 3 * 1 + listify)(deftransform) let
-(deftransform evaluate unlocalize)(def 'assign n items on tos to n variables') let
+(deftransform evaluate unlocalize)(def) let
+'assign n items on tos to n variables' (def-help) let
 
 ((name) let ((name) head show ':' showline '        ' show (name) head '-help' glue load showline '        ' show (name) load load showall '' showline) () (name) load load '(' = if) (help) let
 

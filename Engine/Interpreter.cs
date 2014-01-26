@@ -12,6 +12,7 @@ namespace Engine
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Diagnostics.Contracts;
+  using System.Globalization;
 
   using Nodes;
 
@@ -24,7 +25,7 @@ namespace Engine
   /// <param name="e">
   ///   The e.
   /// </param>
-  public delegate void InvokeHostEventHandler(object sender, EventArgs e);
+  public delegate void InvokeHostEventHandler(object sender, InvokeHostEventArgs e);
 
   /// <summary>
   ///   Interprets the parse-tree of an "atom"-program.
@@ -205,8 +206,6 @@ namespace Engine
 
       foreach (INode node in tree)
       {
-        INodeList tos;
-
         switch (node.Value)
         {
           case "+":
@@ -217,69 +216,162 @@ namespace Engine
           case "<=":
           case ">":
           case ">=":
-            tos = this.Values.Pop(2);
-            this.Values.PushInt(Compute(node.Value, tos[1].GetValueInt(), tos[0].GetValueInt()));
-            break;
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Values.PushInt(Compute(node.Value, tos[1].GetValueInt(), tos[0].GetValueInt()));
+              break;
+            }
+
           case "=":
-            tos = this.Values.Pop(2);
-            this.Values.PushInt((tos[1].Value == tos[0].Value) ? 1 : 0);
-            break;
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Values.PushInt((tos[1].Value == tos[0].Value) ? 1 : 0);
+              break;
+            }
+
           case "#":
-            tos = this.Values.Pop(2);
-            this.Values.PushInt((tos[1].Value != tos[0].Value) ? 1 : 0);
-            break;
-          case "call":
-            this.InvokeHost(this, null);
-            break;
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Values.PushInt((tos[1].Value != tos[0].Value) ? 1 : 0);
+              break;
+            }
+
+          case "Show":
+            {
+              this.InvokeHost(this, new InvokeHostEventArgs(this.Values.Pop().Value));
+              break;
+            }
+
+          case "ShowLine":
+            {
+              this.InvokeHost(this, new InvokeHostEventArgs(this.Values.Pop().Value + Environment.NewLine));
+              break;
+            }
+
           case "let":
-            tos = this.Values.Pop(2);
-            this.Names.PushName(tos);
-            break;
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Names.PushName(tos);
+              break;
+            }
+
           case "load":
-            INodeList loadedList = this.Names.ListAt(this.Values.Pop().GetHead().Value);
+            {
+              INodeList loadedList = this.Names.ListAt(this.Values.Pop().GetHead().Value);
 
-            if ((loadedList != null) && (0 < loadedList.Count))
-            {
-              this.Values.Push(loadedList[0]);
+              if ((loadedList != null) && (0 < loadedList.Count))
+              {
+                this.Values.Push(loadedList[0]);
+              }
+              else
+              {
+                this.Values.Push(NodesHelpers.NewNode(string.Empty));
+              }
+
+              break;
             }
-            else
-            {
-              this.Values.Push(NodesHelpers.NewNode(""));
-            }
-            
-            break;
+
           case "if":
-            tos = this.Values.Pop(3);
-            this.Evaluate((tos[0].GetValueInt() == 0) ? tos[1].SafeList : tos[2].SafeList, false);
-            break;
+            {
+              INodeList tos = this.Values.Pop(3);
+              this.Evaluate((tos[0].GetValueInt() == 0) ? tos[1].SafeList : tos[2].SafeList, false);
+              break;
+            }
+
           case "unlocalize":
-            oldNamesCount = this.Names.Count;
-            break;
+            {
+              oldNamesCount = this.Names.Count;
+              break;
+            }
+
           case "listify":
-            this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
-            break;
+            {
+              this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
+              break;
+            }
+
           case "evaluate":
-            this.Evaluate(this.Values.Pop().SafeList, true);
-            break;
+            {
+              this.Evaluate(this.Values.Pop().SafeList, true);
+              break;
+            }
+
           case "islist":
-            this.Values.PushInt((this.Values.Pop().List == null) ? 0 : 1);
-            break;
+            {
+              this.Values.PushInt((this.Values.Pop().List == null) ? 0 : 1);
+              break;
+            }
+
           case "clone":
-            this.Values.Push(NodesHelpers.NewNode(this.Values.Pop().SafeList.Clone()));
-            break;
+            {
+              this.Values.Push(NodesHelpers.NewNode(this.Values.Pop().SafeList.Clone()));
+              break;
+            }
+
+          case "Size":
+            {
+              INodeList tos = this.Values.Pop(1);
+              this.Values.PushInt(tos[0].SafeList.Count);
+              break;
+            }
+
+          case "Modulo":
+            {
+              string tos0 = this.Values.Pop().Value;
+              string tos1 = this.Values.Pop().Value;
+              int result = int.Parse(tos1) % int.Parse(tos0);
+              this.Values.Push(NodesHelpers.NewNode(result.ToString(CultureInfo.InvariantCulture)));
+              break;
+            }
+
+          case "Glue":
+            {
+              string tos0 = this.Values.Pop().Value;
+              string tos1 = this.Values.Pop().Value;
+              string result = tos1 + tos0;
+              this.Values.Push(NodesHelpers.NewNode(result));
+              break;
+            }
+
+          case "Trim":
+            {
+              string tos = this.Values.Pop().Value;
+              tos = tos.Trim();
+              tos = tos.Replace("  ", " ");
+              string result = tos;
+              this.Values.Push(NodesHelpers.NewNode(result));
+              break;
+            }
+
+          case "Item":
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Values.Push(tos[1].SafeList.ItemAt(tos[0].GetValueInt()));
+              break;
+            }
+
+          case "Join":
+            {
+              INodeList tos = this.Values.Pop(2);
+              this.Values.Push(tos[1].Added(tos[0].SafeList));
+              break;
+            }
+
           default:
-            INodeList list = this.Names.ListAt(node.Value);
-
-            if (list == null)
             {
-              this.Values.Push(node);
-            }
-            else
-            {
-              this.Evaluate(list[0].SafeList, false);
-            }
+              INodeList list = this.Names.ListAt(node.Value);
 
-            break;
+              if (list == null)
+              {
+                this.Values.Push(node);
+              }
+              else
+              {
+                this.Evaluate(list[0].SafeList, false);
+              }
+
+              break;
+            }
         }
       }
 

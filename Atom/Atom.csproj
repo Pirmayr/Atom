@@ -148,7 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisplayNode.cs" />
-    <Compile Include="Host.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -158,7 +157,6 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Script.cs" />
     <Compile Include="Utilities.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <SubType>Designer</SubType>

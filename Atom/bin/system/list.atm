@@ -1,6 +1,6 @@
-(Size call) (size) let
-(Item call) (item) let
-(Join call) (join) let
+(Size) (size) let
+(Item) (item) let
+(Join) (join) let
 
 ((split.list 'hugo') let (split.list) load size (split.size) let ((split.list) load split.size counter - item) split.size loop) (split) let
 

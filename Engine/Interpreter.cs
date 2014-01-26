@@ -128,7 +128,7 @@ namespace Engine
         Debug.Print(e.Message);
       }
 
-      return false;
+      return true;
     }
 
     /// <summary>

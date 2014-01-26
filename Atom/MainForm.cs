@@ -31,7 +31,6 @@ namespace Atom
     ///   The interpreter.
     /// </summary>
     private readonly IInterpreter interpreter = EngineHelpers.NewInterpreter();
-    private string output = "";
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="MainForm" /> class.
@@ -73,15 +72,7 @@ namespace Atom
     [UsedImplicitly]
     public void AddMsg(string msg)
     {
-      this.output += msg;
-      
-      /*
       this.OutputTextBox.Text += msg;
-      this.OutputTextBox.Invalidate ();
-      this.OutputTextBox.Update ();
-      this.OutputTextBox.Refresh ();
-      Application.DoEvents();
-      */
     }
 
     /// <summary>
@@ -93,15 +84,7 @@ namespace Atom
     [UsedImplicitly]
     public void AddMsgLine(string msg)
     {
-      this.output += msg + Environment.NewLine;
-      
-      /*
       this.OutputTextBox.Text += msg + Environment.NewLine;
-      this.OutputTextBox.Invalidate ();
-      this.OutputTextBox.Update ();
-      this.OutputTextBox.Refresh ();
-      Application.DoEvents();
-      */
     }
 
     /// <summary>
@@ -187,15 +170,13 @@ namespace Atom
       try
       {
         this.UpdateEditCtrl();
-        this.output = "";
+        this.OutputTextBox.Clear();
         Host.Run(this, this.interpreter);
 
-        if (!this.interpreter.Run(Utilities.CollectCode()))
+        if (this.interpreter.Run(Utilities.CollectCode()))
         {
           return;
         }
-        
-        this.OutputTextBox.Text = this.output;
 
         this.NamesBindingSource.DataSource = null;
         this.ValuesBindingSource.DataSource = null;

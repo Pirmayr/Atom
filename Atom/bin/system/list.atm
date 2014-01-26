@@ -2,7 +2,10 @@
 (Item) (item) let
 (Join) (join) let
 
-((split.list 'hugo') let (split.list) load size (split.size) let ((split.list) load split.size counter - item) split.size loop) (split) let
+((split.list) let (split.list) load size (split.size) let ((split.list) load split.size counter - item) split.size loop) (split) let
+'split list into its elements and put them on the stack' (split-help) let
+((1 2 3) split) (split-example) let
+'put 1, 2, and 3 on the stack' (split-example-help) let
 
 (load 0 item)(head 'load head of the list associated with the tos') let
 

@@ -1,10 +1,10 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Atom/MainForm.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Atom/MainForm.Designer.cs">
     <Files>
       <File FileName="Atom/MainForm.cs" Line="62" Column="31" />
       <File FileName="Atom/Utilities.cs" Line="1" Column="1" />
-      <File FileName="Atom/MainForm.Designer.cs" Line="1" Column="1" />
+      <File FileName="Atom/MainForm.Designer.cs" Line="290" Column="67" />
       <File FileName="Atom/MainForm.resx" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>

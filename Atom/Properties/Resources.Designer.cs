@@ -142,15 +142,6 @@ namespace Atom.Properties {
         }
         
         /// <summary>
-        ///   Sucht eine lokalisierte Zeichenfolge, die item ähnelt.
-        /// </summary>
-        internal static string Item {
-            get {
-                return ResourceManager.GetString("Item", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Sucht eine lokalisierte Zeichenfolge, die Keywords ähnelt.
         /// </summary>
         internal static string Keywords {

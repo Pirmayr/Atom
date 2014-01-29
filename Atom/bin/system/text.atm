@@ -2,9 +2,10 @@
 'convert n items at the tos to a comma separated list' (csv-help) let
 (1 2 3 4 4 csv showline) (csv-example) let
 
-(Trim) (trim) let
+(systemtrim) (trim) let
 'remove all superfluous blanks from tos' (trim-help) let
 
-(Glue) (glue) let
-'concatenate value at tos-1 and tos' (glue-help) let
+(systemglue) (glue) let
+'concatenate values at tos-1 and tos' (glue-help) let
 ('foo' 'bar' glue showline) (glue-example) let
+'foo and bar are concatenated to foobar' (glue-example-help) let

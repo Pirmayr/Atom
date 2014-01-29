@@ -34,6 +34,12 @@ namespace Engine
     INodeList Values { get; }
 
     /// <summary>
+    ///   Gets the current program.
+    /// </summary>
+    /// <value>The values-stack.</value>
+    INodeList Program { get; }
+
+    /// <summary>
     /// Runs the current "atom"-code.
     /// </summary>
     /// <param name="code">

@@ -63,8 +63,8 @@ namespace Engine
     /// </summary>
     public Interpreter()
     {
-      this.Names.Push(NodesHelpers.NewNode(PreDefNames, NodesHelpers.NewNodeList(NodesHelpers.NewNode(this.Names))));
-      this.Names.Push(NodesHelpers.NewNode(PreDefValues, NodesHelpers.NewNodeList(NodesHelpers.NewNode(this.Values))));
+      this.Names.Push(NodesHelpers.NewNode(PreDefNames, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Names))));
+      this.Names.Push(NodesHelpers.NewNode(PreDefValues, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Values))));
     }
 
     /// <summary>
@@ -83,6 +83,11 @@ namespace Engine
         return this.names;
       }
     }
+
+    /// <summary>
+    /// Gets the program.
+    /// </summary>
+    public INodeList Program { get; private set; }
 
     /// <summary>
     ///   Gets value (see interface).
@@ -112,17 +117,18 @@ namespace Engine
       try
       {
         Parser atom = new Parser();
-        INodeList tree = atom.Parse(code);
 
-        if (tree == null)
+        this.Program = atom.Parse(code);
+
+        if (this.Program == null)
         {
           return true;
         }
 
         this.Names.RemoveRange(2, this.Names.Count - 2);
-        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode(tree))));
+        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Program))));
         this.Values.Clear();
-        this.Evaluate(tree, true);
+        this.Evaluate(this.Program, true);
       }
       catch (Exception e)
       {
@@ -248,7 +254,7 @@ namespace Engine
               break;
             }
 
-          case "let":
+          case "Let":
             {
               INodeList tos = this.Values.Pop(2);
               this.Names.PushName(tos);
@@ -324,7 +330,7 @@ namespace Engine
               break;
             }
 
-          case "Glue":
+          case "systemglue":
             {
               string tos0 = this.Values.Pop().Value;
               string tos1 = this.Values.Pop().Value;
@@ -333,17 +339,23 @@ namespace Engine
               break;
             }
 
-          case "Trim":
+          case "systemtrim":
             {
-              string tos = this.Values.Pop().Value;
-              tos = tos.Trim();
-              tos = tos.Replace("  ", " ");
-              string result = tos;
-              this.Values.Push(NodesHelpers.NewNode(result));
+              string previousTos = this.Values.Pop().Value;
+              string currentTos = previousTos.Replace("  ", " ");
+
+              while (!currentTos.Equals(previousTos))
+              {
+                previousTos = currentTos;
+                currentTos = previousTos.Replace("  ", " ");
+              }
+
+              currentTos = currentTos.Trim();
+              this.Values.Push(NodesHelpers.NewNode(currentTos));
               break;
             }
 
-          case "Item":
+          case "systemitem":
             {
               INodeList tos = this.Values.Pop(2);
               this.Values.Push(tos[1].SafeList.ItemAt(tos[0].GetValueInt()));

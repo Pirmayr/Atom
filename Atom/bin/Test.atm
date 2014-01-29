@@ -1,10 +1,13 @@
-' csv-example '
-' glue-example '
-' documentation '
-' (loop) help '
-(names) load clone (1 listify help) map 
-
 (1 2 3) split
+12 factorial showline
+(map) help
+(let) help
+(program) load
+
+
+
+
+
 
 
 

@@ -10,17 +10,11 @@ namespace Atom
 {
   using System;
   using System.Collections.Generic;
-  using System.Diagnostics.Contracts;
   using System.IO;
-  using System.Linq;
   using System.Windows.Forms;
-
   using Atom.Annotations;
   using Atom.Properties;
-
   using Engine;
-
-  using Nodes;
 
   /// <summary>
   ///   The main form.
@@ -33,7 +27,12 @@ namespace Atom
     private readonly IInterpreter interpreter = EngineHelpers.NewInterpreter();
 
     /// <summary>
-    /// The output.
+    ///   The view helper.
+    /// </summary>
+    private readonly NavigationTreeViewHelper viewHelper;
+
+    /// <summary>
+    ///   The output-string. Contents will be shown in the output-window upon termination of a program run.
     /// </summary>
     private string output = string.Empty;
 
@@ -46,21 +45,8 @@ namespace Atom
       {
         this.InitializeComponent();
         this.UpdateFilesList();
-
-        if (Utilities.IsUnix())
-        {
-          this.ValuesBindingSource.DataSource = this.interpreter.Values;
-          this.NamesBindingSource.DataSource = this.interpreter.Names;
-        }
-        else
-        {
-          this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
-          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
-        }
-
-        this.ValuesGridView.DataSource = this.ValuesBindingSource;
-        this.NamesGridView.DataSource = this.NamesBindingSource;
         this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
+        this.viewHelper = new NavigationTreeViewHelper(this.NavigationTreeView);
       }
       catch (Exception e)
       {
@@ -69,7 +55,7 @@ namespace Atom
     }
 
     /// <summary>
-    /// Adds the specified message to the message-window.
+    /// Adds the specified message to the output-string.
     /// </summary>
     /// <param name="msg">
     /// The message.
@@ -81,35 +67,21 @@ namespace Atom
     }
 
     /// <summary>
-    /// Adds the specified message to the message-window and issues a newline.
+    /// Handles the "SelectedValueChanged"-event of the "ModulesListBox".
     /// </summary>
-    /// <param name="msg">
-    /// The message.
+    /// <param name="sender">
+    /// The sender.
     /// </param>
-    [UsedImplicitly]
-    public void AddMsgLine(string msg)
+    /// <param name="e">
+    /// The arguments.
+    /// </param>
+    private void ModulesListBoxSelectedValueChanged(object sender, EventArgs e)
     {
-      this.output += msg + Environment.NewLine;
+      this.UpdateEditCtrl();
     }
 
     /// <summary>
-    /// The get display list.
-    /// </summary>
-    /// <param name="list">
-    /// The list.
-    /// </param>
-    /// <returns>
-    /// The display list.
-    /// </returns>
-    private static IEnumerable<DisplayNode> GetDisplayList(IEnumerable<INode> list)
-    {
-      Contract.Requires(list != null);
-
-      return list.Select(currentNode => new DisplayNode(currentNode));
-    }
-
-    /// <summary>
-    /// The modules list box_ selected value changed.
+    /// The navigation tree view_ before select.
     /// </summary>
     /// <param name="sender">
     /// The sender.
@@ -117,9 +89,9 @@ namespace Atom
     /// <param name="e">
     /// The e.
     /// </param>
-    private void ModulesListBoxSelectedValueChanged(object sender, EventArgs e)
+    private void NavigationTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
     {
-      this.UpdateEditCtrl();
+      this.viewHelper.InitializeNode(e);
     }
 
     /// <summary>
@@ -152,7 +124,7 @@ namespace Atom
     }
 
     /// <summary>
-    /// The replace button_ click.
+    /// The replace button click.
     /// </summary>
     /// <param name="sender">
     /// The sender.
@@ -184,20 +156,7 @@ namespace Atom
         }
 
         this.OutputTextBox.Text = this.output;
-
-        this.NamesBindingSource.DataSource = null;
-        this.ValuesBindingSource.DataSource = null;
-
-        if (Utilities.IsUnix())
-        {
-          this.ValuesBindingSource.DataSource = this.interpreter.Values;
-          this.NamesBindingSource.DataSource = this.interpreter.Names;
-        }
-        else
-        {
-          this.ValuesBindingSource.DataSource = GetDisplayList(this.interpreter.Values);
-          this.NamesBindingSource.DataSource = GetDisplayList(this.interpreter.Names);
-        }
+        this.viewHelper.RebuildNavigationTree(this.interpreter.Names);
       }
       catch (Exception e)
       {
@@ -259,6 +218,23 @@ namespace Atom
       if (0 < this.ModulesListBox.Items.Count)
       {
         this.ModulesListBox.SelectedIndex = this.ModulesListBox.Items.Count - 1;
+      }
+    }
+
+    private void NavigationTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
+    {
+      this.viewHelper.InitializeNode(e);
+    }
+
+    private void NavigationTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
+    {
+      if (e.Node.IsExpanded)
+      {
+        e.Node.Collapse();
+      }
+      else
+      {
+        e.Node.Expand();
       }
     }
   }

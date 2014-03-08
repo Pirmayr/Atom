@@ -1,24 +1,23 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="EngineHelpers.cs" company="me">
-//   me  
+//   me
 // </copyright>
 // <summary>
 //   The engine helpers.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace Engine
 {
   /// <summary>
-  /// The engine helpers.
+  ///   The engine helpers.
   /// </summary>
-  public class EngineHelpers
+  public static class EngineHelpers
   {
     /// <summary>
-    /// The new interpreter.
+    ///   The new interpreter.
     /// </summary>
     /// <returns>
-    /// The <see cref="IInterpreter"/>.
+    ///   The <see cref="IInterpreter" />.
     /// </returns>
     public static IInterpreter NewInterpreter()
     {

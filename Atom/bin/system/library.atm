@@ -1,0 +1,52 @@
+h1 "io"
+
+(' ' show) (blank "show a blank") Let
+('(' show) (lparen "show a left parenthesis") Let
+(')' show) (rparen "show a right parenthesis") Let
+('' showline) (newline "show a newline") Let
+
+h1 "iteration"
+
+((counter code) Let (code counter 1 Sub (counter) Set counter RepeatIf) Evaluate) (loop "evaluate tos-1 tos times") Let
+((function) Let (list) Let ((list) Load (list) Load Size counter Sub Item function) (list) load size loop) (map "apply tos on each element of tos-1") Let
+((condition) Let emptylist (result) Let ((n) Let ((result) Load (n) Load Join drop) () (n) Load condition If) map (result) load) (sieve) Let
+((whilecondition whilecode) Let whilecode (whilecode) Load (whilecondition) Load whilecondition RepeatIf drop drop) (while "evaluate tos-1 while tos is true") Let
+((i e s v c) Let s (v) Load Let (c (v) Load i += (v) Load Load e <= RepeatIf) Evaluate) (for "for-loop; tos4: code, tos3: variable, tos2: start, tos1: end, tos: step") Let
+
+h1 "lists"
+
+((split.list) Let (split.list) load size (split.size) Let ((split.list) load split.size counter - item) split.size loop) (split "split list into its elements and put them on the stack") Let
+(load 0 item)(head "load head of the list associated with the tos") Let
+((c) Let (b) Let (a) Let (a) load (b) load (c) load (a) load islist if) (iflist "if tos is a list, then do tos-2, otherwise do tos-1") Let
+((c) Let (b) Let (a) Let (a) load (b) load (c) load (a) load '(' = if) (iflparen "if tos is a left parenthesis, then do tos-2, otherwise do tos-1") Let
+
+h1 "mathematics"
+
+(copy *) (square "square the tos") Let
+((counter) Let (1) (counter 1 - factorial counter *) counter 1 = if) (factorial "compute factorial of tos recursively") Let
+(over over mod (1 + smallestfactor) (swap drop) rotate if) (smallestfactor) Let
+(copy 2 smallestfactor =) (isprime "if tos is prime, set tos to 1, otherwise to 0") Let
+(1 -) (dec "increment tos by 1") Let
+(1 +) (inc "decrement tos by 1") Let
+((name) Let (name) load load inc (name) load set) (namedinc) Let
+((increment name) Let (name) Evaluate increment Evaluate + (name) Load Set) (+= "add number at tos to variable at tos1") Let
+
+h1 "stack"
+
+((a) Let) (drop "drop the tos") Let
+((a) Let (a) load (a) load ) (copy "duplicate the tos'") Let
+((a) Let (b) Let (a) load (b) load) (swap "swap tos and tos-1") Let
+((a) Let (b) Let (b) load (a) load (b) load) (over) Let
+((a) Let (b) Let (c) Let (b) load (a) load (c) load) (rotate) Let
+
+h1 "system"
+
+((name) Let ((name) head show ':' showline '        ' show (name) load load showall '' showline) () (name) load load '(' = if) (help "show help for name at tos") Let
+(((lparen showall rparen) (blank show blank) iflist) map) (showall "show entire contents of element at tos") Let
+(inc (end) Let (begin) Let (end counter -) end begin - loop end begin - listify) (range "build list of numbers from tos-1 to tos") Let
+((length) Let (value) Let (value) length loop length listify) (array "build list of tos numbers initialialized with tos-1") Let
+(() clear) (emptylist "the empty list") Let
+
+h1 "text"
+
+((',' swap glue glue) swap 1 - loop) (csv "convert the topmost tos items on the stack to a comma separated list") Let

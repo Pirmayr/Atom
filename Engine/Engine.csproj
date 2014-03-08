@@ -129,6 +129,7 @@
     <Compile Include="Interpreter.cs" />
     <Compile Include="InvokeHostEventArgs.cs" />
     <Compile Include="Parser.cs" />
+    <Compile Include="PredefinedAtoms.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

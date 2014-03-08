@@ -16,7 +16,7 @@ namespace Nodes
   public static class NodesHelpers
   {
     /// <summary>
-    /// Initializes a new instance of the <see cref="Node"/> class.
+    /// Initializes a new node.
     /// </summary>
     /// <param name="value">
     /// The value of the node.

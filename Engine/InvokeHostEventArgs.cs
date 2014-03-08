@@ -1,16 +1,15 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="InvokeHostEventArgs.cs" company="me">
-//  me
+//   me
 // </copyright>
 // <summary>
 //   The invoke host event args.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace Engine
 {
   /// <summary>
-  /// The invoke host event args.
+  ///   The invoke host event args.
   /// </summary>
   public class InvokeHostEventArgs
   {
@@ -26,7 +25,7 @@ namespace Engine
     }
 
     /// <summary>
-    /// Gets the message to be shown.
+    ///   Gets the message to be shown.
     /// </summary>
     public string Message { get; private set; }
   }

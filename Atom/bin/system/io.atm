@@ -1,5 +1,0 @@
-(Show) (show 'output the tos') let
-(ShowLine) (showline 'output the tos and issue a new-line') let
-(' ' show) (blank) let
-('(' show) (lparen) let
-(')' show) (rparen) let

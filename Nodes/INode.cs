@@ -1,6 +1,6 @@
 ﻿// --------------------------------------------------------------------------------------------------------------------
 // <copyright file="INode.cs" company="me">
-//   me  
+//   me
 // </copyright>
 // <summary>
 //   Represents nodes in a node-list. Node-lists are used in
@@ -11,9 +11,10 @@
 //   * Lists in 'atom'-programs.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace Nodes
 {
+  using System.Collections.Generic;
+
   /// <summary>
   ///   Represents nodes in a node-list. Node-lists are used in
   ///   different parts of the application:
@@ -24,6 +25,16 @@ namespace Nodes
   /// </summary>
   public interface INode
   {
+    /// <summary>
+    /// Gets or sets the cached node.
+    /// </summary>
+    INode CachedNode { get; set; }
+
+    /// <summary>
+    ///   Gets or sets the comment associated with the node.
+    /// </summary>
+    string Comment { get; set; }
+
     /// <summary>
     ///   Gets or sets the list, that is associated with the node.
     /// </summary>
@@ -39,31 +50,10 @@ namespace Nodes
     INodeList SafeList { get; }
 
     /// <summary>
-    ///   Gets or sets the value of the node.
+    ///   Gets the value of the node.
     /// </summary>
     /// <value>The value.</value>
-    string Value { get; set; }
-
-    /// <summary>
-    /// The head of the list, that is associated with the node,
-    ///   or the node itself if there is no list associated with
-    ///   the node.
-    /// </summary>
-    /// <value>
-    /// The head.
-    /// </value>
-    /// <returns>
-    /// The <see cref="INode"/>.
-    /// </returns>
-    INode GetHead();
-
-    /// <summary>
-    /// Gets the value of the head of the list associated with the node, if any.
-    /// </summary>
-    /// <returns>
-    /// The <see cref="int"/>.
-    /// </returns>
-    int GetValueInt();
+    string Value { get; }
 
     /// <summary>
     /// Returns the list associated with this node joined with the given list.
@@ -74,6 +64,27 @@ namespace Nodes
     /// <returns>
     /// Joined list.
     /// </returns>
-    INode Added(INodeList list);
+    INode Added(IEnumerable<INode> list);
+
+    /// <summary>
+    ///   The head of the list, that is associated with the node,
+    ///   or the node itself if there is no list associated with
+    ///   the node.
+    /// </summary>
+    /// <value>
+    ///   The head.
+    /// </value>
+    /// <returns>
+    ///   The <see cref="INode" />.
+    /// </returns>
+    INode GetHead();
+
+    /// <summary>
+    ///   Gets the value of the head of the list associated with the node, if any.
+    /// </summary>
+    /// <returns>
+    ///   The <see cref="int" />.
+    /// </returns>
+    int GetValueInt();
   }
 }

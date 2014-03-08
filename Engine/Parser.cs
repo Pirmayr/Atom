@@ -26,6 +26,11 @@ namespace Engine
     private char currentCharacter;
 
     /// <summary>
+    ///   The current node.
+    /// </summary>
+    private INode currentNode;
+
+    /// <summary>
     ///   Current symbol read.
     /// </summary>
     private Symbol currentSymbol;
@@ -64,6 +69,11 @@ namespace Engine
       ///   Right parenthesis.
       /// </summary>
       RightParenthesis, 
+
+      /// <summary>
+      ///   The comment.
+      /// </summary>
+      Comment, 
     }
 
     /// <summary>
@@ -76,7 +86,7 @@ namespace Engine
     /// When the code could be parsed successfully, the return value is "true", else the return value is "false".
     /// </returns>
     /// <remarks>
-    /// Grammar: Atom = { word | '(' Atom ')' .
+    /// Grammar: Atom = { word { comment } | '(' Atom ')' }.
     /// </remarks>
     public INodeList Parse(string code)
     {
@@ -150,10 +160,26 @@ namespace Engine
           }
 
           break;
+        case '"':
+          this.currentSymbol = Symbol.Comment;
+          this.GetChr(ref code);
+
+          while ((this.currentCharacter != '"') && (this.currentCharacter != EndOfString))
+          {
+            this.currentValue += this.currentCharacter;
+            this.GetChr(ref code);
+          }
+
+          if (this.currentCharacter != EndOfString)
+          {
+            this.GetChr(ref code);
+          }
+
+          break;
         default:
           this.currentSymbol = Symbol.Word;
 
-          while ((this.currentCharacter != '(') && (this.currentCharacter != ')') && (this.currentCharacter != '\'') && (this.currentCharacter != EndOfString) && !char.IsWhiteSpace(this.currentCharacter))
+          while ((this.currentCharacter != '(') && (this.currentCharacter != ')') && (this.currentCharacter != '{') && (this.currentCharacter != '}') && (this.currentCharacter != '\'') && (this.currentCharacter != EndOfString) && !char.IsWhiteSpace(this.currentCharacter))
           {
             this.currentValue += this.currentCharacter;
             this.GetChr(ref code);
@@ -178,14 +204,14 @@ namespace Engine
 
       while ((this.currentSymbol == Symbol.Word) || (this.currentSymbol == Symbol.LeftParenthesis))
       {
-        INode newNode = NodesHelpers.NewNode(this.currentValue);
+        this.currentNode = NodesHelpers.NewNode(this.currentValue);
 
-        result.AddElement(newNode);
+        result.AddElement(this.currentNode);
 
         if (this.currentSymbol == Symbol.LeftParenthesis)
         {
           this.GetSym(ref code);
-          newNode.List = this.ParseAtom(ref code);
+          this.currentNode.List = this.ParseAtom(ref code);
 
           if (this.currentSymbol == Symbol.RightParenthesis)
           {
@@ -199,6 +225,12 @@ namespace Engine
         else
         {
           this.GetSym(ref code);
+
+          while (this.currentSymbol == Symbol.Comment)
+          {
+            this.currentNode.Comment += this.currentValue;
+            this.GetSym(ref code);
+          }
         }
       }
 

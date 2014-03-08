@@ -10,11 +10,14 @@ namespace Atom
 {
   using System;
   using System.Collections.Generic;
+  using System.Diagnostics;
+  using System.Drawing;
   using System.IO;
   using System.Windows.Forms;
   using Atom.Annotations;
-  using Atom.Properties;
   using Engine;
+  using Nodes;
+  using ScintillaNET;
 
   /// <summary>
   ///   The main form.
@@ -25,11 +28,6 @@ namespace Atom
     ///   The interpreter.
     /// </summary>
     private readonly IInterpreter interpreter = EngineHelpers.NewInterpreter();
-
-    /// <summary>
-    ///   The view helper.
-    /// </summary>
-    private readonly NavigationTreeViewHelper viewHelper;
 
     /// <summary>
     ///   The output-string. Contents will be shown in the output-window upon termination of a program run.
@@ -44,13 +42,22 @@ namespace Atom
       try
       {
         this.InitializeComponent();
+        this.UpdateEditCtrlConfiguration();
+        this.NavigationTreeView.HelpTextBox = this.HelpTextBox;
+
+        ToolStripProfessionalRenderer renderer = this.MainToolStrip.Renderer as ToolStripProfessionalRenderer;
+
+        if (renderer != null)
+        {
+          renderer.RoundedEdges = false;
+        }
+
         this.UpdateFilesList();
         this.interpreter.InvokeHost += this.OnInterpreterInvokehost;
-        this.viewHelper = new NavigationTreeViewHelper(this.NavigationTreeView);
       }
       catch (Exception e)
       {
-        MessageBox.Show(Resources.MSG_COULD_NOT_INITIATE_PROGRAM + e.Message, string.Empty, MessageBoxButtons.OK, 0, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign, false);
+        MessageBox.Show(e.Message, string.Empty, MessageBoxButtons.OK, 0, MessageBoxDefaultButton.Button1, MessageBoxOptions.RtlReading | MessageBoxOptions.RightAlign, false);
       }
     }
 
@@ -78,20 +85,6 @@ namespace Atom
     private void ModulesListBoxSelectedValueChanged(object sender, EventArgs e)
     {
       this.UpdateEditCtrl();
-    }
-
-    /// <summary>
-    /// The navigation tree view_ before select.
-    /// </summary>
-    /// <param name="sender">
-    /// The sender.
-    /// </param>
-    /// <param name="e">
-    /// The e.
-    /// </param>
-    private void NavigationTreeView_BeforeSelect(object sender, TreeViewCancelEventArgs e)
-    {
-      this.viewHelper.InitializeNode(e);
     }
 
     /// <summary>
@@ -156,7 +149,8 @@ namespace Atom
         }
 
         this.OutputTextBox.Text = this.output;
-        this.viewHelper.RebuildNavigationTree(this.interpreter.Names);
+        this.NavigationTreeView.RebuildNavigationTree(this.interpreter, this.interpreter.Names, this.interpreter.Names);
+        this.UpdateEditCtrlConfiguration();
       }
       catch (Exception e)
       {
@@ -195,9 +189,61 @@ namespace Atom
       if ((newPath != null) && File.Exists(newPath))
       {
         this.EditCtl.Text = Utilities.ReadFile(newPath);
-        this.EditCtl.Select(0, 0);
         this.EditCtl.Tag = newPath;
       }
+    }
+
+    /// <summary>
+    ///   The update edit ctrl configuration.
+    /// </summary>
+    private void UpdateEditCtrlConfiguration()
+    {
+      this.EditCtl.Lexing.Lexer = Lexer.Cpp;
+
+      string keywords1 = string.Empty;
+
+      foreach (string curKeyword in this.interpreter.PredefinedAtoms())
+      {
+        if (!string.IsNullOrEmpty(keywords1))
+        {
+          keywords1 += " ";
+        }
+
+        keywords1 += curKeyword;
+      }
+
+      string keywords2 = string.Empty;
+
+      foreach (INode curNode in this.interpreter.Names)
+      {
+        string curKeyword = curNode.Value;
+
+        if (!this.interpreter.IsPredefinedAtom(curKeyword))
+        {
+          if (!string.IsNullOrEmpty(keywords2))
+          {
+            keywords2 += " ";
+          }
+
+          keywords2 += curKeyword;
+        }
+      }
+
+      this.EditCtl.Lexing.Keywords[0] = keywords1;
+      this.EditCtl.Lexing.Keywords[1] = keywords2;
+
+      foreach (KeyValuePair<string, int> curStyleName in this.EditCtl.Lexing.StyleNameMap)
+      {
+        Debug.WriteLine(curStyleName);
+
+        Style curStyle = this.EditCtl.Styles[curStyleName.Key];
+
+        curStyle.ForeColor = Color.Black;
+      }
+
+      this.EditCtl.Styles[this.EditCtl.Lexing.StyleNameMap["WORD"]].ForeColor = Color.Red;
+      this.EditCtl.Styles[this.EditCtl.Lexing.StyleNameMap["WORD2"]].ForeColor = Color.Blue;
+      this.EditCtl.Styles[this.EditCtl.Lexing.StyleNameMap["STRING"]].BackColor = Color.LightYellow;
     }
 
     /// <summary>
@@ -218,23 +264,6 @@ namespace Atom
       if (0 < this.ModulesListBox.Items.Count)
       {
         this.ModulesListBox.SelectedIndex = this.ModulesListBox.Items.Count - 1;
-      }
-    }
-
-    private void NavigationTreeView_BeforeExpand(object sender, TreeViewCancelEventArgs e)
-    {
-      this.viewHelper.InitializeNode(e);
-    }
-
-    private void NavigationTreeView_NodeMouseClick(object sender, TreeNodeMouseClickEventArgs e)
-    {
-      if (e.Node.IsExpanded)
-      {
-        e.Node.Collapse();
-      }
-      else
-      {
-        e.Node.Expand();
       }
     }
   }

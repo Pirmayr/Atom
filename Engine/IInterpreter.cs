@@ -1,18 +1,18 @@
 // --------------------------------------------------------------------------------------------------------------------
 // <copyright file="IInterpreter.cs" company="me">
-//   me  
+//   me
 // </copyright>
 // <summary>
 //   The Interpreter interface.
 // </summary>
 // --------------------------------------------------------------------------------------------------------------------
-
 namespace Engine
 {
+  using System.Collections.Generic;
   using Nodes;
 
   /// <summary>
-  /// The Interpreter interface.
+  ///   The Interpreter interface.
   /// </summary>
   public interface IInterpreter
   {
@@ -28,16 +28,23 @@ namespace Engine
     INodeList Names { get; }
 
     /// <summary>
-    ///   Gets the values-stack.
+    /// Determines, if the given value is the name of a predefined atom.
     /// </summary>
-    /// <value>The values-stack.</value>
-    INodeList Values { get; }
+    /// <param name="value">
+    /// The value.
+    /// </param>
+    /// <returns>
+    /// If the value is the name of a predefined atom, then "true" is returned, otherwise "false".
+    /// </returns>
+    bool IsPredefinedAtom(string value);
 
     /// <summary>
-    ///   Gets the current program.
+    /// The predefined atoms.
     /// </summary>
-    /// <value>The values-stack.</value>
-    INodeList Program { get; }
+    /// <returns>
+    /// List of predefined atoms.
+    /// </returns>
+    IEnumerable<string> PredefinedAtoms();
 
     /// <summary>
     /// Runs the current "atom"-code.

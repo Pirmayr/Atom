@@ -13,6 +13,8 @@
 // --------------------------------------------------------------------------------------------------------------------
 namespace Nodes
 {
+  using System.Collections.Generic;
+
   /// <summary>
   ///   Represents nodes in a node-list. Node-lists are used in
   ///   different parts of the application:
@@ -24,20 +26,21 @@ namespace Nodes
   internal class Node : INode
   {
     /// <summary>
+    ///   The value.
+    /// </summary>
+    private readonly string value = string.Empty;
+
+    /// <summary>
     ///   The list.
     /// </summary>
     private NodeList list;
-
-    /// <summary>
-    ///   The value.
-    /// </summary>
-    private string value = string.Empty;
 
     /// <summary>
     ///   Initializes a new instance of the <see cref="Node" /> class.
     /// </summary>
     public Node()
     {
+      this.CachedNode = null;
     }
 
     /// <summary>
@@ -49,6 +52,7 @@ namespace Nodes
     public Node(string value)
     {
       this.value = value;
+      this.CachedNode = null;
     }
 
     /// <summary>
@@ -60,6 +64,7 @@ namespace Nodes
     public Node(NodeList list)
     {
       this.list = list;
+      this.CachedNode = null;
     }
 
     /// <summary>
@@ -75,7 +80,18 @@ namespace Nodes
     {
       this.value = value;
       this.list = list;
+      this.CachedNode = null;
     }
+
+    /// <summary>
+    /// Gets or sets the cached node.
+    /// </summary>
+    public INode CachedNode { get; set; }
+
+    /// <summary>
+    ///   Gets or sets value (see interface).
+    /// </summary>
+    public string Comment { get; set; }
 
     /// <summary>
     ///   Gets or sets the list, that is associated with the node.
@@ -108,7 +124,7 @@ namespace Nodes
 
         if (result == null)
         {
-          result = new NodeList { IsSafeList = true };
+          result = new NodeList();
           result.AddElement(this);
         }
 
@@ -117,7 +133,7 @@ namespace Nodes
     }
 
     /// <summary>
-    ///   Gets or sets the value of the node.
+    ///   Gets the value of the node.
     /// </summary>
     /// <value>The value.</value>
     public string Value
@@ -125,11 +141,6 @@ namespace Nodes
       get
       {
         return this.value;
-      }
-
-      set
-      {
-        this.value = value;
       }
     }
 
@@ -142,7 +153,7 @@ namespace Nodes
     /// <returns>
     /// Joined list.
     /// </returns>
-    public INode Added(INodeList tail)
+    public INode Added(IEnumerable<INode> tail)
     {
       this.List = this.SafeList.Joined(tail) as NodeList;
       return this;

@@ -12,8 +12,6 @@ namespace Engine
   using System.Collections.Generic;
   using System.Diagnostics;
   using System.Diagnostics.Contracts;
-  using System.Globalization;
-
   using Nodes;
 
   /// <summary>
@@ -26,6 +24,18 @@ namespace Engine
   ///   The e.
   /// </param>
   public delegate void InvokeHostEventHandler(object sender, InvokeHostEventArgs e);
+
+  /// <summary>
+  ///   The handle predefined atom delegate.
+  /// </summary>
+  /// <param name="node">The currently evaluated node.</param>
+  /// <param name="namesCount">
+  ///   Number of named items at the beginning of the current block.
+  /// </param>
+  /// <param name="currentElementIndex">
+  ///   The index of the current element of the currently evaluated block.
+  /// </param>
+  public delegate void PredefinedAtomHandler(INode node, ref int namesCount, ref int currentElementIndex);
 
   /// <summary>
   ///   Interprets the parse-tree of an "atom"-program.
@@ -53,6 +63,11 @@ namespace Engine
     private readonly INodeList names = NodesHelpers.NewNodeList();
 
     /// <summary>
+    ///   The predefined atom delegates.
+    /// </summary>
+    private readonly Dictionary<string, PredefinedAtomHandler> predefinedAtomDelegates = new Dictionary<string, PredefinedAtomHandler>();
+
+    /// <summary>
     ///   The values.
     /// </summary>
     private readonly INodeList values = NodesHelpers.NewNodeList();
@@ -63,6 +78,37 @@ namespace Engine
     /// </summary>
     public Interpreter()
     {
+      PredefinedAtoms predefinedAtoms = new PredefinedAtoms(this);
+
+      this.predefinedAtomDelegates.Add("#", predefinedAtoms.NotEquals);
+      this.predefinedAtomDelegates.Add("=", predefinedAtoms.Equals);
+      this.predefinedAtomDelegates.Add("<", predefinedAtoms.IsLess);
+      this.predefinedAtomDelegates.Add("<=", predefinedAtoms.IsLessOrEqual);
+      this.predefinedAtomDelegates.Add(">", predefinedAtoms.IsGreater);
+      this.predefinedAtomDelegates.Add(">=", predefinedAtoms.IsGreaterOrEqual);
+      this.predefinedAtomDelegates.Add("Clear", predefinedAtoms.Clear);
+      this.predefinedAtomDelegates.Add("Clone", predefinedAtoms.Clone);
+      this.predefinedAtomDelegates.Add("Evaluate", predefinedAtoms.Evaluate);
+      this.predefinedAtomDelegates.Add("Set", predefinedAtoms.Set);
+      this.predefinedAtomDelegates.Add("Glue", predefinedAtoms.Glue);
+      this.predefinedAtomDelegates.Add("If", predefinedAtoms.If);
+      this.predefinedAtomDelegates.Add("IsList", predefinedAtoms.IsList);
+      this.predefinedAtomDelegates.Add("Item", predefinedAtoms.Item);
+      this.predefinedAtomDelegates.Add("Join", predefinedAtoms.Join);
+      this.predefinedAtomDelegates.Add("Let", predefinedAtoms.Let);
+      this.predefinedAtomDelegates.Add("Listify", predefinedAtoms.Listify);
+      this.predefinedAtomDelegates.Add("Load", predefinedAtoms.Load);
+      this.predefinedAtomDelegates.Add("Modulo", predefinedAtoms.Modulo);
+      this.predefinedAtomDelegates.Add("Show", predefinedAtoms.Show);
+      this.predefinedAtomDelegates.Add("ShowLine", predefinedAtoms.ShowLine);
+      this.predefinedAtomDelegates.Add("Size", predefinedAtoms.Size);
+      this.predefinedAtomDelegates.Add("Add", predefinedAtoms.Add);
+      this.predefinedAtomDelegates.Add("Sub", predefinedAtoms.Sub);
+      this.predefinedAtomDelegates.Add("Mul", predefinedAtoms.Mul);
+      this.predefinedAtomDelegates.Add("Div", predefinedAtoms.Div);
+      this.predefinedAtomDelegates.Add("Push", predefinedAtoms.Push);
+      this.predefinedAtomDelegates.Add("RepeatIf", predefinedAtoms.RepeatIf);
+
       this.Names.Push(NodesHelpers.NewNode(PreDefNames, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Names))));
       this.Names.Push(NodesHelpers.NewNode(PreDefValues, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Values))));
     }
@@ -73,7 +119,7 @@ namespace Engine
     public event InvokeHostEventHandler InvokeHost;
 
     /// <summary>
-    ///   Gets value (see interface).
+    ///   Gets some value (see interface).
     /// </summary>
     /// <value>The names-stack.</value>
     public INodeList Names
@@ -85,12 +131,7 @@ namespace Engine
     }
 
     /// <summary>
-    /// Gets the program.
-    /// </summary>
-    public INodeList Program { get; private set; }
-
-    /// <summary>
-    ///   Gets value (see interface).
+    ///   Gets list of values (stack).
     /// </summary>
     /// <value>The values-stack.</value>
     public INodeList Values
@@ -99,6 +140,126 @@ namespace Engine
       {
         return this.values;
       }
+    }
+
+    /// <summary>
+    /// Actually evaluate the specified parse-tree.
+    /// </summary>
+    /// <param name="tree">
+    /// The parse-tree.
+    /// </param>
+    /// <param name="preserveLocalNames">
+    /// If "true", all locally defined names are preserved after the end of evaluation, if "false" they are deleted.
+    /// </param>
+    public void Evaluate(INodeList tree, bool preserveLocalNames)
+    {
+      Contract.Requires(tree != null, "Cannot evaluate null-pointer");
+
+      ClearCachedNodes(tree);
+
+      int oldNamesCount = this.Names.Count;
+      bool firstLoop = true;
+      bool useNodeCache = false;
+      int currentIndex = 0;
+
+      while (currentIndex < tree.Count)
+      {
+        if (currentIndex == 0)
+        {
+          if (firstLoop)
+          {
+            firstLoop = false;
+          }
+          else
+          {
+            useNodeCache = true;
+          }
+        }
+
+        INode node = tree[currentIndex++];
+        string currentValue = node.Value;
+
+        if (this.predefinedAtomDelegates.ContainsKey(currentValue))
+        {
+          this.predefinedAtomDelegates[node.Value](node, ref oldNamesCount, ref currentIndex);
+        }
+        else
+        {
+          INodeList list = null;
+
+          if (currentValue != "(")
+          {
+            INode foundNode;
+
+            if (useNodeCache)
+            {
+              foundNode = node.CachedNode ?? this.names.NodeAt(currentValue);
+              node.CachedNode = foundNode;
+            }
+            else
+            {
+              foundNode = this.Names.NodeAt(currentValue);
+            }
+
+            if (foundNode != null)
+            {
+              list = foundNode.List;
+            }
+          }
+
+          if (list == null)
+          {
+            this.Values.Push(node);
+          }
+          else
+          {
+            this.Evaluate(list[0].SafeList, false);
+          }
+        }
+      }
+
+      if (!preserveLocalNames)
+      {
+        this.Names.RemoveRange(oldNamesCount, this.Names.Count - oldNamesCount);
+      }
+
+      ClearCachedNodes(tree);
+    }
+
+    /// <summary>
+    /// The fire invoke host.
+    /// </summary>
+    /// <param name="value">
+    /// The value.
+    /// </param>
+    public void FireInvokeHost(string value)
+    {
+      this.InvokeHost(this, new InvokeHostEventArgs(value));
+    }
+
+    /// <summary>
+    /// The is predefined atom.
+    /// </summary>
+    /// <param name="value">
+    /// The value.
+    /// </param>
+    /// <returns>
+    /// The <see cref="bool"/>.
+    /// </returns>
+    public bool IsPredefinedAtom(string value)
+    {
+      return this.predefinedAtomDelegates.ContainsKey(value);
+    }
+
+    /// <summary>
+    ///   The predefined atoms.
+    /// </summary>
+    /// <returns>
+    ///   The Collection of predefined atoms.
+    /// </returns>
+    public IEnumerable<string> PredefinedAtoms()
+    {
+      return this.predefinedAtomDelegates.Keys;
     }
 
     /// <summary>
@@ -117,18 +278,23 @@ namespace Engine
       try
       {
         Parser atom = new Parser();
+        INodeList program = atom.Parse(code);
 
-        this.Program = atom.Parse(code);
-
-        if (this.Program == null)
+        if (program == null)
         {
           return true;
         }
 
         this.Names.RemoveRange(2, this.Names.Count - 2);
-        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", this.Program))));
+        this.Names.Push(NodesHelpers.NewNode(PreDefProgram, NodesHelpers.NewNodeList(NodesHelpers.NewNode("<", program))));
         this.Values.Clear();
-        this.Evaluate(this.Program, true);
+
+        Stopwatch stopwatch = new Stopwatch();
+
+        stopwatch.Start();
+        this.Evaluate(program, true);
+        stopwatch.Stop();
+        this.FireInvokeHost(string.Format("Program run in {0} ms", stopwatch.ElapsedMilliseconds));
       }
       catch (Exception e)
       {
@@ -139,257 +305,16 @@ namespace Engine
     }
 
     /// <summary>
-    /// Performs computation according to the specified operation and parameters.
-    /// </summary>
-    /// <param name="operation">
-    /// The operation.
-    /// </param>
-    /// <param name="opA">
-    /// Operand a.
-    /// </param>
-    /// <param name="opB">
-    /// Operand b.
-    /// </param>
-    /// <returns>
-    /// Result of the computation.
-    /// </returns>
-    private static int Compute(string operation, int opA, int opB)
-    {
-      int result = 0;
-
-      switch (operation)
-      {
-        case "+":
-          result = opA + opB;
-          break;
-        case "-":
-          result = opA - opB;
-          break;
-        case "*":
-          result = opA * opB;
-          break;
-        case "/":
-          result = opA / opB;
-          break;
-        case "=":
-          result = (opA == opB) ? 1 : 0;
-          break;
-        case "#":
-          result = (opA != opB) ? 1 : 0;
-          break;
-        case "<":
-          result = (opA < opB) ? 1 : 0;
-          break;
-        case "<=":
-          result = (opA <= opB) ? 1 : 0;
-          break;
-        case ">":
-          result = (opA > opB) ? 1 : 0;
-          break;
-        case ">=":
-          result = (opA >= opB) ? 1 : 0;
-          break;
-      }
-
-      return result;
-    }
-
-    /// <summary>
-    /// Actually evaluate the specified parse-tree.
+    /// The clear cached nodes.
     /// </summary>
     /// <param name="tree">
-    /// The parse-tree.
+    /// The tree.
     /// </param>
-    /// <param name="preserveLocalNames">
-    /// If "true", all locally defined names are preserved after the end of evaluation, if
-    ///   "false" they are deleted.
-    /// </param>
-    private void Evaluate(IEnumerable<INode> tree, bool preserveLocalNames)
+    private static void ClearCachedNodes(IEnumerable<INode> tree)
     {
-      Contract.Requires(tree != null, "Cannot evaluate null-pointer");
-
-      int oldNamesCount = this.Names.Count;
-
-      foreach (INode node in tree)
+      foreach (INode currentNode in tree)
       {
-        switch (node.Value)
-        {
-          case "+":
-          case "-":
-          case "*":
-          case "/":
-          case "<":
-          case "<=":
-          case ">":
-          case ">=":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Values.PushInt(Compute(node.Value, tos[1].GetValueInt(), tos[0].GetValueInt()));
-              break;
-            }
-
-          case "=":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Values.PushInt((tos[1].Value == tos[0].Value) ? 1 : 0);
-              break;
-            }
-
-          case "#":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Values.PushInt((tos[1].Value != tos[0].Value) ? 1 : 0);
-              break;
-            }
-
-          case "Show":
-            {
-              this.InvokeHost(this, new InvokeHostEventArgs(this.Values.Pop().Value));
-              break;
-            }
-
-          case "ShowLine":
-            {
-              this.InvokeHost(this, new InvokeHostEventArgs(this.Values.Pop().Value + Environment.NewLine));
-              break;
-            }
-
-          case "Let":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Names.PushName(tos);
-              break;
-            }
-
-          case "load":
-            {
-              INodeList loadedList = this.Names.ListAt(this.Values.Pop().GetHead().Value);
-
-              if ((loadedList != null) && (0 < loadedList.Count))
-              {
-                this.Values.Push(loadedList[0]);
-              }
-              else
-              {
-                this.Values.Push(NodesHelpers.NewNode(string.Empty));
-              }
-
-              break;
-            }
-
-          case "if":
-            {
-              INodeList tos = this.Values.Pop(3);
-              this.Evaluate((tos[0].GetValueInt() == 0) ? tos[1].SafeList : tos[2].SafeList, false);
-              break;
-            }
-
-          case "unlocalize":
-            {
-              oldNamesCount = this.Names.Count;
-              break;
-            }
-
-          case "listify":
-            {
-              this.Values.Push(NodesHelpers.NewNode("(", this.Values.Pop(this.Values.Pop().GetValueInt(), true)));
-              break;
-            }
-
-          case "evaluate":
-            {
-              this.Evaluate(this.Values.Pop().SafeList, true);
-              break;
-            }
-
-          case "islist":
-            {
-              this.Values.PushInt((this.Values.Pop().List == null) ? 0 : 1);
-              break;
-            }
-
-          case "clone":
-            {
-              this.Values.Push(NodesHelpers.NewNode(this.Values.Pop().SafeList.Clone()));
-              break;
-            }
-
-          case "Size":
-            {
-              INodeList tos = this.Values.Pop(1);
-              this.Values.PushInt(tos[0].SafeList.Count);
-              break;
-            }
-
-          case "Modulo":
-            {
-              string tos0 = this.Values.Pop().Value;
-              string tos1 = this.Values.Pop().Value;
-              int result = int.Parse(tos1) % int.Parse(tos0);
-              this.Values.Push(NodesHelpers.NewNode(result.ToString(CultureInfo.InvariantCulture)));
-              break;
-            }
-
-          case "systemglue":
-            {
-              string tos0 = this.Values.Pop().Value;
-              string tos1 = this.Values.Pop().Value;
-              string result = tos1 + tos0;
-              this.Values.Push(NodesHelpers.NewNode(result));
-              break;
-            }
-
-          case "systemtrim":
-            {
-              string previousTos = this.Values.Pop().Value;
-              string currentTos = previousTos.Replace("  ", " ");
-
-              while (!currentTos.Equals(previousTos))
-              {
-                previousTos = currentTos;
-                currentTos = previousTos.Replace("  ", " ");
-              }
-
-              currentTos = currentTos.Trim();
-              this.Values.Push(NodesHelpers.NewNode(currentTos));
-              break;
-            }
-
-          case "systemitem":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Values.Push(tos[1].SafeList.ItemAt(tos[0].GetValueInt()));
-              break;
-            }
-
-          case "Join":
-            {
-              INodeList tos = this.Values.Pop(2);
-              this.Values.Push(tos[1].Added(tos[0].SafeList));
-              break;
-            }
-
-          default:
-            {
-              INodeList list = this.Names.ListAt(node.Value);
-
-              if (list == null)
-              {
-                this.Values.Push(node);
-              }
-              else
-              {
-                this.Evaluate(list[0].SafeList, false);
-              }
-
-              break;
-            }
-        }
-      }
-
-      if (!preserveLocalNames)
-      {
-        this.Names.RemoveRange(oldNamesCount, this.Names.Count - oldNamesCount);
+        currentNode.CachedNode = null;
       }
     }
   }

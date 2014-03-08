@@ -18,16 +18,10 @@ namespace Nodes
   internal class NodeList : List<Node>, INodeList
   {
     /// <summary>
-    ///   The help suffix.
-    /// </summary>
-    private const string HelpSuffix = "-help";
-
-    /// <summary>
     ///   Initializes a new instance of the <see cref="NodeList" /> class.
     /// </summary>
     public NodeList()
     {
-      this.IsSafeList = false;
     }
 
     /// <summary>
@@ -38,36 +32,31 @@ namespace Nodes
     /// </param>
     public NodeList(INode node)
     {
-      this.IsSafeList = false;
       this.AddElement(node as Node);
     }
 
     /// <summary>
-    ///   Gets or sets a value indicating whether this instance is safe list.
+    /// Indexer for this list. If the index is out of range, a new empty node is returned.
     /// </summary>
-    /// <value>
-    ///   <c>true</c> if this instance is safe list; otherwise, <c>false</c>.
-    /// </value>
-    /// <remarks>
-    ///   A safe list is a list, that was created in "INode.SafeList"
-    ///   as a wrapper for a node.
-    /// </remarks>
-    public bool IsSafeList { get; set; }
-
-    /// <summary>
-    /// Indexer for this list.
-    /// </summary>
-    /// <param name="key">
-    /// The key.
+    /// <param name="index">
+    /// The index.
     /// </param>
     /// <returns>
-    /// The <see cref="INode"/>.
+    /// The node at the given index.
     /// </returns>
-    public new INode this[int key]
+    public new INode this[int index]
     {
       get
       {
-        return base[key];
+        return ((0 <= index) && (index < this.Count)) ? base[index] : new Node();
+      }
+
+      set
+      {
+        if ((0 <= index) && (index < this.Count))
+        {
+          base[index] = (Node)value;
+        }
       }
     }
 
@@ -83,6 +72,17 @@ namespace Nodes
     }
 
     /// <summary>
+    ///   Summary see interface.
+    /// </summary>
+    /// <returns>
+    ///   Return value see interface.
+    /// </returns>
+    public IEnumerable<INode> Clone()
+    {
+      return this.MemberwiseClone() as INodeList;
+    }
+
+    /// <summary>
     ///   The get enumerator.
     /// </summary>
     /// <returns>
@@ -94,25 +94,6 @@ namespace Nodes
     }
 
     /// <summary>
-    /// Returns the list-item at the specified location.
-    /// </summary>
-    /// <param name="index">
-    /// The index of the list-item.
-    /// </param>
-    /// <returns>
-    /// The list-item.
-    /// </returns>
-    public INode ItemAt(int index)
-    {
-      if (index < this.Count)
-      {
-        return this[index];
-      }
-
-      return new Node();
-    }
-
-    /// <summary>
     /// Add given list to this list and returns the joined result.
     /// </summary>
     /// <param name="list">
@@ -121,7 +102,7 @@ namespace Nodes
     /// <returns>
     /// Joined list.
     /// </returns>
-    public INodeList Joined(INodeList list)
+    public INodeList Joined(IEnumerable<INode> list)
     {
       NodeList actualList = list as NodeList;
 
@@ -139,25 +120,39 @@ namespace Nodes
     /// <param name="name">
     /// The name of the element.
     /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
     /// <returns>
     /// List ("null" if no list could be found).
     /// </returns>
     /// <remarks>
     /// The element is searched downwards from the top of stack.
     /// </remarks>
-    public INodeList ListAt(string name)
+    public INodeList ListAt(string name, int limit = 0)
     {
-      for (int i = this.Count - 1; 0 <= i; --i)
-      {
-        INode curNode = this[i];
+      INode node = this.NodeAt(name, limit);
 
-        if (curNode.Value == name)
-        {
-          return curNode.List;
-        }
-      }
+      return (node == null) ? null : node.List;
+    }
 
-      return null;
+    /// <summary>
+    /// See interface.
+    /// </summary>
+    /// <param name="name">
+    /// Name: See interface.
+    /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
+    /// <returns>
+    /// Return value: See interface.
+    /// </returns>
+    public INode NodeAt(string name, int limit = 0)
+    {
+      int index = this.FindLastIndex(this.Count - 1, this.Count - limit, x => x.Value == name);
+
+      return (0 <= index) ? this[index] : null;
     }
 
     /// <summary>
@@ -237,19 +232,29 @@ namespace Nodes
     /// <param name="topOfStack">
     /// Stack-fragment with Name and value.
     /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
     /// <remarks>
     /// - This function essentially implements the "let"-command of "atom".
     ///   - The TOS of the stack-fragment contains the name as a list element, whereas TOS - 1 is the value.
     /// </remarks>
-    public void PushName(INodeList topOfStack)
+    public void PushName(INodeList topOfStack, int limit)
     {
-      this.Push(new Node(topOfStack[0].GetHead().Value, new NodeList(topOfStack[1])));
-      this.Push(new Node(topOfStack[0].GetHead().Value + HelpSuffix, new NodeList(topOfStack[0].SafeList.ItemAt(1))));
-    }
+      NodeList newList = new NodeList(topOfStack[1]);
+      INode tos = topOfStack[0];
+      INode head = tos.GetHead();
+      string name = head.Value;
+      INode node = this.NodeAt(name, limit);
 
-    public INodeList Clone()
-    {
-      return this.MemberwiseClone() as INodeList;
+      if (node != null)
+      {
+        node.List = newList;
+      }
+      else
+      {
+        this.Push(new Node(name, newList) { Comment = head.Comment });
+      }
     }
   }
 }

@@ -58,51 +58,6 @@ namespace Atom
     }
 
     /// <summary>
-    /// Searches for the specified file.
-    /// </summary>
-    /// <param name="fileSpecification">
-    /// File to be searched for.
-    /// </param>
-    /// <param name="defaultValue">
-    /// Default value.
-    /// </param>
-    /// <returns>
-    /// The path to the file or the default path, if the file could not be found.
-    /// </returns>
-    public static string FilePath(string fileSpecification, string defaultValue)
-    {
-      string testPath = fileSpecification;
-
-      if (!File.Exists(testPath))
-      {
-        string fileName = Path.GetFileName(fileSpecification);
-
-        testPath = Application.StartupPath + "/" + fileName;
-
-        if (!File.Exists(testPath))
-        {
-          testPath = Application.StartupPath + "/../" + fileName;
-
-          if (!File.Exists(testPath))
-          {
-            testPath = defaultValue;
-          }
-        }
-      }
-
-      return testPath;
-    }
-
-    /// <summary>
-    ///   Checks, if the programs runs on a Unix system.
-    /// </summary>
-    /// <returns>If the program runs on a Unix system, the return value is "true", otherwise it is "false".</returns>
-    public static bool IsUnix()
-    {
-      return (Environment.OSVersion.Platform == PlatformID.MacOSX) | (Environment.OSVersion.Platform == PlatformID.Unix);
-    }
-
-    /// <summary>
     /// Reads an entire text-file and returns contents as a string.
     /// </summary>
     /// <param name="filePath">
@@ -128,7 +83,7 @@ namespace Atom
     public static void ReplaceInFiles(string original, string replacement)
     {
       Regex regex = new Regex(string.Format(@"\b{0}\b", original));
-      
+
       if (!string.IsNullOrEmpty(original))
       {
         foreach (string curFile in CollectFiles(new[] { "atm" }))
@@ -176,6 +131,42 @@ namespace Atom
       result.AddRange(Directory.GetFiles(directory));
 
       return result;
+    }
+
+    /// <summary>
+    /// Searches for the specified file.
+    /// </summary>
+    /// <param name="fileSpecification">
+    /// File to be searched for.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value.
+    /// </param>
+    /// <returns>
+    /// The path to the file or the default path, if the file could not be found.
+    /// </returns>
+    private static string FilePath(string fileSpecification, string defaultValue)
+    {
+      string testPath = fileSpecification;
+
+      if (!File.Exists(testPath))
+      {
+        string fileName = Path.GetFileName(fileSpecification);
+
+        testPath = Application.StartupPath + "/" + fileName;
+
+        if (!File.Exists(testPath))
+        {
+          testPath = Application.StartupPath + "/../" + fileName;
+
+          if (!File.Exists(testPath))
+          {
+            testPath = defaultValue;
+          }
+        }
+      }
+
+      return testPath;
     }
 
     /// <summary>

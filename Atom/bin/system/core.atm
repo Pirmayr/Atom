@@ -1,2 +1,21 @@
-(Let unlocalize) (let) Let
-'store tos as a named element' (let-help) let
+(Load) (load) Let
+(Listify) (listify) Let
+(If) (if) Let
+(Clear) (clear) Let 'clear list on the tos' (clear-help) Let
+(IsList) (islist) Let
+(Clone) (clone) Let
+(Evaluate) (evaluate) Let
+(Glue) (glue "concatenate the values of tos-1 and tos") Let
+(Show) (show "output the tos") Let
+(ShowLine) (showline "output the tos and issue a newline") Let
+(Size) (size) Let
+(Evaluate Item) (item) Let
+(Join) (join) Let
+(Modulo) (mod "compute tos = tos-1 mod tos") Let
+(Set) (set) Let
+(Add) (+) Let
+(Sub) (-) Let
+(Push) (push) Let
+(Mul) (*) Let
+(Div) (/) Let
+() (h1) Let

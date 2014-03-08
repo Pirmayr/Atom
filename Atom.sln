@@ -7,16 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Nodes", "Nodes\Nodes.csproj
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Additional Files", "Additional Files", "{C673F883-05C8-43C2-90A8-417E03E37D82}"
 	ProjectSection(SolutionItems) = preProject
-		Atom\bin\system\function.atm = Atom\bin\system\function.atm
-		Atom\bin\system\io.atm = Atom\bin\system\io.atm
-		Atom\bin\system\iteration.atm = Atom\bin\system\iteration.atm
-		Atom\bin\system\list.atm = Atom\bin\system\list.atm
-		Atom\bin\system\math.atm = Atom\bin\system\math.atm
-		Atom\bin\system\miscellaneous.atm = Atom\bin\system\miscellaneous.atm
-		Atom\bin\system\stack.atm = Atom\bin\system\stack.atm
-		Atom\bin\system\system.atm = Atom\bin\system\system.atm
+		Atom\bin\system\core.atm = Atom\bin\system\core.atm
 		Atom\bin\Test.atm = Atom\bin\Test.atm
-		Atom\bin\system\text.atm = Atom\bin\system\text.atm
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Engine", "Engine\Engine.csproj", "{E333A01E-1674-4865-B674-43CD98FD27C5}"

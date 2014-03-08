@@ -9,7 +9,6 @@
 namespace Nodes
 {
   using System.Collections.Generic;
-  using System.Diagnostics.Contracts;
 
   /// <summary>
   ///   A list of nodes.
@@ -22,18 +21,6 @@ namespace Nodes
     int Count { get; }
 
     /// <summary>
-    ///   Gets or sets a value indicating whether this instance is safe list.
-    /// </summary>
-    /// <value>
-    ///   <c>true</c> if this instance is safe list; otherwise, <c>false</c>.
-    /// </value>
-    /// <remarks>
-    ///   A safe list is a list, that was created in "INode.SafeList"
-    ///   as a wrapper for a node.
-    /// </remarks>
-    bool IsSafeList { get; set; }
-
-    /// <summary>
     /// Indexer for this list.
     /// </summary>
     /// <param name="key">
@@ -42,7 +29,7 @@ namespace Nodes
     /// <returns>
     /// The <see cref="INode"/>.
     /// </returns>
-    INode this[int key] { get; }
+    INode this[int key] { get; set; }
 
     /// <summary>
     /// Adds an element to the list.
@@ -58,15 +45,12 @@ namespace Nodes
     void Clear();
 
     /// <summary>
-    /// Returns the list-item at the specified location.
+    ///   Returns a shallow clone of this list.
     /// </summary>
-    /// <param name="index">
-    /// The index of the list-item.
-    /// </param>
     /// <returns>
-    /// The list-item.
+    ///   The cloned list.
     /// </returns>
-    INode ItemAt(int index);
+    IEnumerable<INode> Clone();
 
     /// <summary>
     /// Add given list to this list and returns the joined result.
@@ -77,7 +61,7 @@ namespace Nodes
     /// <returns>
     /// Joined list.
     /// </returns>
-    INodeList Joined(INodeList list);
+    INodeList Joined(IEnumerable<INode> list);
 
     /// <summary>
     /// Searches for the element identified by the specified name.
@@ -85,13 +69,30 @@ namespace Nodes
     /// <param name="name">
     /// The name of the element.
     /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
     /// <returns>
     /// List ("null" if no list could be found).
     /// </returns>
     /// <remarks>
     /// The element is searched downwards from the top of stack.
     /// </remarks>
-    INodeList ListAt(string name);
+    INodeList ListAt(string name, int limit = 0);
+
+    /// <summary>
+    /// The node at.
+    /// </summary>
+    /// <param name="name">
+    /// The name.
+    /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
+    /// <returns>
+    /// The <see cref="INode"/>.
+    /// </returns>
+    INode NodeAt(string name, int limit = 0);
 
     /// <summary>
     /// Removes multiple items from the top of stack and returns them as a list.
@@ -137,11 +138,14 @@ namespace Nodes
     /// <param name="topOfStack">
     /// Stack-fragment with Name and value.
     /// </param>
+    /// <param name="limit">
+    /// The limit.
+    /// </param>
     /// <remarks>
     /// - This function essentially implements the "let"-command of "atom".
     ///   - The TOS of the stack-fragment contains the name as a list element, whereas TOS - 1 is the value.
     /// </remarks>
-    void PushName(INodeList topOfStack);
+    void PushName(INodeList topOfStack, int limit);
 
     /// <summary>
     /// The remove range.
@@ -153,7 +157,5 @@ namespace Nodes
     /// The count.
     /// </param>
     void RemoveRange(int start, int count);
-
-    INodeList Clone();
   }
 }

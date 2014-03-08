@@ -1,16 +1,21 @@
-(1 2 3) split
-12 factorial showline
-(map) help
-(let) help
-(program) load
+' factorial14
 
+(loop) help
 
+2 10 range (isprime) sieve showall newline
 
+47 (t) Let 11 (t) Let t showline
 
+3 1 4 1 5 9 6 csv showline
 
+47 (hugo) Let (hugo) hugo +=
 
+((n) load show blank) (n) 1 19 2 for newline
 
+1 10 range (2 mod 0 =) sieve (showline) map '
 
+((limit) Let 0 limit inc array (a) Let (() (b show blank  ((a) load j 1 push) (j) b limit b for) (a) load b item if) (b) 2 limit 1 for newline) (primeswithoutput) Let
+((limit) Let 0 limit inc array (a) Let (() (((a) load j 1 push) (j) b limit b for) (a) load b item if) (b) 2 limit 1 for newline) (primes) Let
 
-
+100 primeswithoutput
 
